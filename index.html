@@ -504,8 +504,8 @@
 <!-- HERO -->
 <div class="hero" id="apie">
     <div class="hero-badge">Investuotojo pristatymas</div>
-    <h1>Profesionalus turto valdymas<br><span class="accent">be metinių mokesčių</span></h1>
-    <p>KŪB Outperform X — uždaro tipo investicinis fondas, investuojantis į JAV akcijas ir opcionus. Vienkartinis mokestis, ilgalaikis interesų sutapimas.</p>
+    <h1>Profesionalus turto valdymas<br><span class="accent">be metinių mokesčių ir GPM</span></h1>
+    <p>KŪB Outperform X — kolektyvinio investavimo subjektas (KIS), investuojantis į JAV akcijas ir opcionus. Vienkartinis mokestis, 0% GPM nuo pelno, ilgalaikis interesų sutapimas.</p>
     <div class="hero-stats">
         <div class="hero-stat">
             <div class="number">S&P 500</div>
@@ -663,6 +663,10 @@
             <h3>&#10003; Ilgalaikis suderinimas</h3>
             <p>Valdytojas negali išpirkti savo vienetų 5 metus. Pirmą dešimtmetį — ne daugiau nei pusę. Tai garantuoja ilgalaikį interesų sutapimą.</p>
         </div>
+        <div class="adv-card" style="border-color: var(--green); grid-column: span 2;">
+            <h3>&#10003; 0% GPM — kolektyvinio investavimo subjekto (KIS) pranašumas</h3>
+            <p>KŪB Outperform X yra kolektyvinio investavimo subjektas (KIS). Tai reiškia, kad įmonė-komanditorius nemoka GPM nuo fonde uždirbto pelno. Investuojant per ETF (pvz. S&P 500), nuo realizuoto pelno taikomas 15% GPM. Per 10 metų su 125k investicija ir 11% grąža tai sudaro daugiau nei 34 000 EUR skirtumą. KIS statusas — vienas svarbiausių struktūrinių pranašumų ilgalaikiam investuotojui.</p>
+        </div>
     </div>
 </section>
 
@@ -755,6 +759,15 @@
         </div>
         <div class="faq-item">
             <button class="faq-question" onclick="toggleFaq(this)">
+                Kodėl nereikia mokėti GPM nuo pelno?
+                <span class="icon">+</span>
+            </button>
+            <div class="faq-answer">
+                <p>KŪB Outperform X yra kolektyvinio investavimo subjektas (KIS) pagal IISKISĮ. Įmonė, investuojanti per KIS, nemoka gyventojų pajamų mokesčio (GPM) nuo fonde uždirbto pelno — pelnas apmokestinamas tik tada, kai lėšos išimamos iš KIS ir paskirstomos. Tuo tarpu investuojant tiesiogiai per ETF ar brokerį, nuo kiekvieno realizuoto pelno taikomas 15% GPM. Per ilgą laikotarpį šis skirtumas ženkliai padidina sudėtinių palūkanų efektą — pinigai, kurie kitaip nueitų mokesčiams, toliau dirba jūsų portfelyje.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
                 Koks minimalus investicijos dydis?
                 <span class="icon">+</span>
             </button>
@@ -830,7 +843,10 @@ function calcSP500(principal, years, netReturn) {
         balance *= (1 + netReturn / 100);
         data.push(balance);
     }
-    return { final: balance, totalFees: 0, data };
+    const profit = balance - principal;
+    const gpm = profit > 0 ? profit * 0.15 : 0;
+    const finalAfterTax = balance - gpm;
+    return { final: balance, finalAfterTax, gpm, totalFees: 0, data };
 }
 
 let chartInstance = null;
@@ -850,6 +866,7 @@ function recalculate() {
     const hedgeROI = ((hedge.final - principal) / principal * 100).toFixed(1);
     const outperfROI = ((outperf.final - principal) / principal * 100).toFixed(1);
     const spROI = ((sp.final - principal) / principal * 100).toFixed(1);
+    const spROIafterTax = ((sp.finalAfterTax - principal) / principal * 100).toFixed(1);
 
     // Cards
     document.getElementById('projCards').innerHTML = `
@@ -869,8 +886,8 @@ function recalculate() {
             </div>
         </div>
         <div class="proj-card highlight">
-            <h3>Outperform X</h3>
-            <div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis</div>
+            <h3>Outperform X <span style="font-size:0.7rem;color:var(--gold);font-weight:400;">KIS</span></h3>
+            <div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis, 0% GPM</div>
             <div class="proj-result gold">${formatNum(outperf.final)} &euro;</div>
             <div class="proj-gain"><span class="positive">+${formatNum(outperf.final - principal)} &euro;</span> grynasis pelnas</div>
             <div style="background:rgba(201,168,76,0.12);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
@@ -880,20 +897,22 @@ function recalculate() {
             <div class="proj-detail">
                 <div class="proj-detail-row"><span>Vienkartinis mokestis</span><span class="val" style="color:var(--red);">-${formatNum(outperf.entryFee)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Metiniai mokesčiai</span><span class="val" style="color:var(--green);">0 &euro;</span></div>
+                <div class="proj-detail-row"><span>GPM nuo pelno</span><span class="val" style="color:var(--green);">0% (KIS)</span></div>
                 <div class="proj-detail-row"><span>Pranašumas vs hedge</span><span class="val" style="color:var(--gold);">+${formatNum(advantageVsHedge)} &euro;</span></div>
             </div>
         </div>
         <div class="proj-card">
             <h3>S&P 500 (ETF)</h3>
-            <div class="fee-desc">${spReturn}% grąža (po 0.03% TER)</div>
-            <div class="proj-result muted">${formatNum(sp.final)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(sp.final - principal)} &euro;</span> grynasis pelnas</div>
+            <div class="fee-desc">${spReturn}% grąža (po 0.03% TER), 15% GPM nuo pelno</div>
+            <div class="proj-result muted">${formatNum(sp.finalAfterTax)} &euro;</div>
+            <div class="proj-gain"><span class="positive">+${formatNum(sp.finalAfterTax - principal)} &euro;</span> grynasis pelnas po GPM</div>
             <div style="background:rgba(136,136,160,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
-                <span style="font-size:1.3rem;font-weight:700;color:var(--text-muted);">${spROI}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža nuo įnašo</span>
+                <span style="font-size:1.3rem;font-weight:700;color:var(--text-muted);">${spROIafterTax}%</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po GPM</span>
             </div>
             <div class="proj-detail">
-                <div class="proj-detail-row"><span>Mokesčiai</span><span class="val" style="color:var(--green);">~min (TER 0.03%)</span></div>
+                <div class="proj-detail-row"><span>Portfelio vertė prieš GPM</span><span class="val">${formatNum(sp.final)} &euro;</span></div>
+                <div class="proj-detail-row"><span>GPM 15% nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(sp.gpm)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Aktyvus valdymas</span><span class="val">Ne</span></div>
                 <div class="proj-detail-row"><span>Opcionų strategijos</span><span class="val">Ne</span></div>
             </div>
@@ -991,11 +1010,11 @@ function recalculate() {
     let tableHTML = `<thead><tr>
         <th>Metai</th>
         <th>Hedge fondas</th>
-        <th>Hedge ROI</th>
+        <th>ROI</th>
         <th>Outperform X</th>
-        <th>Outperform ROI</th>
-        <th>S&P 500</th>
-        <th>S&P ROI</th>
+        <th>ROI</th>
+        <th>S&P 500 po GPM</th>
+        <th>ROI</th>
         <th>Outperform vs Hedge</th>
     </tr></thead><tbody>`;
 
@@ -1003,14 +1022,18 @@ function recalculate() {
         const diff = outperf.data[y] - hedge.data[y];
         const hROI = ((hedge.data[y] - principal) / principal * 100).toFixed(1);
         const oROI = ((outperf.data[y] - principal) / principal * 100).toFixed(1);
-        const sROI = ((sp.data[y] - principal) / principal * 100).toFixed(1);
+        // S&P po GPM kiekvienais metais
+        const spProfit = sp.data[y] - principal;
+        const spGPM = spProfit > 0 ? spProfit * 0.15 : 0;
+        const spAfterTax = sp.data[y] - spGPM;
+        const sROI = ((spAfterTax - principal) / principal * 100).toFixed(1);
         tableHTML += `<tr>
             <td>${y === 0 ? 'Start' : y}</td>
             <td>${formatNum(hedge.data[y])} &euro;</td>
             <td style="color:${hROI >= 0 ? 'var(--blue)' : 'var(--red)'}">${hROI}%</td>
             <td class="col-highlight">${formatNum(outperf.data[y])} &euro;</td>
             <td style="color:var(--gold);font-weight:600;">${oROI}%</td>
-            <td>${formatNum(sp.data[y])} &euro;</td>
+            <td>${formatNum(spAfterTax)} &euro;</td>
             <td style="color:var(--text-muted)">${sROI}%</td>
             <td style="color:${diff >= 0 ? 'var(--green)' : 'var(--red)'}">${diff >= 0 ? '+' : ''}${formatNum(diff)} &euro;</td>
         </tr>`;

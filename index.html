@@ -255,6 +255,11 @@
             margin-bottom: 1.5rem;
             font-size: 1.1rem;
         }
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
         canvas { width: 100% !important; }
 
         /* TABLE */
@@ -579,7 +584,9 @@
 
     <div class="chart-container">
         <h3>Portfelio vertė per laikotarpį</h3>
-        <canvas id="projChart" height="350"></canvas>
+        <div class="chart-wrapper">
+            <canvas id="projChart"></canvas>
+        </div>
     </div>
 
     <div class="table-container">
@@ -840,6 +847,10 @@ function recalculate() {
 
     const advantageVsHedge = outperf.final - hedge.final;
 
+    const hedgeROI = ((hedge.final - principal) / principal * 100).toFixed(1);
+    const outperfROI = ((outperf.final - principal) / principal * 100).toFixed(1);
+    const spROI = ((sp.final - principal) / principal * 100).toFixed(1);
+
     // Cards
     document.getElementById('projCards').innerHTML = `
         <div class="proj-card">
@@ -847,6 +858,10 @@ function recalculate() {
             <div class="fee-desc">2% metinis + 20% nuo pelno kasmet</div>
             <div class="proj-result blue">${formatNum(hedge.final)} &euro;</div>
             <div class="proj-gain"><span class="positive">+${formatNum(hedge.final - principal)} &euro;</span> grynasis pelnas</div>
+            <div style="background:rgba(91,141,239,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
+                <span style="font-size:1.3rem;font-weight:700;color:var(--blue);">${hedgeROI}%</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža nuo įnašo</span>
+            </div>
             <div class="proj-detail">
                 <div class="proj-detail-row"><span>Valdymo mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.mgmtFees)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Sėkmės mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.perfFees)} &euro;</span></div>
@@ -858,6 +873,10 @@ function recalculate() {
             <div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis</div>
             <div class="proj-result gold">${formatNum(outperf.final)} &euro;</div>
             <div class="proj-gain"><span class="positive">+${formatNum(outperf.final - principal)} &euro;</span> grynasis pelnas</div>
+            <div style="background:rgba(201,168,76,0.12);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
+                <span style="font-size:1.3rem;font-weight:700;color:var(--gold);">${outperfROI}%</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža nuo įnašo</span>
+            </div>
             <div class="proj-detail">
                 <div class="proj-detail-row"><span>Vienkartinis mokestis</span><span class="val" style="color:var(--red);">-${formatNum(outperf.entryFee)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Metiniai mokesčiai</span><span class="val" style="color:var(--green);">0 &euro;</span></div>
@@ -869,6 +888,10 @@ function recalculate() {
             <div class="fee-desc">${spReturn}% grąža (po 0.03% TER)</div>
             <div class="proj-result muted">${formatNum(sp.final)} &euro;</div>
             <div class="proj-gain"><span class="positive">+${formatNum(sp.final - principal)} &euro;</span> grynasis pelnas</div>
+            <div style="background:rgba(136,136,160,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
+                <span style="font-size:1.3rem;font-weight:700;color:var(--text-muted);">${spROI}%</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža nuo įnašo</span>
+            </div>
             <div class="proj-detail">
                 <div class="proj-detail-row"><span>Mokesčiai</span><span class="val" style="color:var(--green);">~min (TER 0.03%)</span></div>
                 <div class="proj-detail-row"><span>Aktyvus valdymas</span><span class="val">Ne</span></div>
@@ -968,18 +991,27 @@ function recalculate() {
     let tableHTML = `<thead><tr>
         <th>Metai</th>
         <th>Hedge fondas</th>
+        <th>Hedge ROI</th>
         <th>Outperform X</th>
+        <th>Outperform ROI</th>
         <th>S&P 500</th>
+        <th>S&P ROI</th>
         <th>Outperform vs Hedge</th>
     </tr></thead><tbody>`;
 
     for (let y = 0; y <= years; y++) {
         const diff = outperf.data[y] - hedge.data[y];
+        const hROI = ((hedge.data[y] - principal) / principal * 100).toFixed(1);
+        const oROI = ((outperf.data[y] - principal) / principal * 100).toFixed(1);
+        const sROI = ((sp.data[y] - principal) / principal * 100).toFixed(1);
         tableHTML += `<tr>
             <td>${y === 0 ? 'Start' : y}</td>
             <td>${formatNum(hedge.data[y])} &euro;</td>
+            <td style="color:${hROI >= 0 ? 'var(--blue)' : 'var(--red)'}">${hROI}%</td>
             <td class="col-highlight">${formatNum(outperf.data[y])} &euro;</td>
+            <td style="color:var(--gold);font-weight:600;">${oROI}%</td>
             <td>${formatNum(sp.data[y])} &euro;</td>
+            <td style="color:var(--text-muted)">${sROI}%</td>
             <td style="color:${diff >= 0 ? 'var(--green)' : 'var(--red)'}">${diff >= 0 ? '+' : ''}${formatNum(diff)} &euro;</td>
         </tr>`;
     }
@@ -993,10 +1025,24 @@ function toggleFaq(btn) {
 }
 
 // Load Chart.js and init
-const script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js';
-script.onload = () => recalculate();
-document.head.appendChild(script);
+function loadChartJS(callback) {
+    if (typeof Chart !== 'undefined') { callback(); return; }
+    const urls = [
+        'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.7/chart.umd.min.js'
+    ];
+    let idx = 0;
+    function tryNext() {
+        if (idx >= urls.length) { console.error('Chart.js failed to load'); return; }
+        const s = document.createElement('script');
+        s.src = urls[idx++];
+        s.onload = callback;
+        s.onerror = tryNext;
+        document.head.appendChild(s);
+    }
+    tryNext();
+}
+loadChartJS(() => recalculate());
 </script>
 
 </body>

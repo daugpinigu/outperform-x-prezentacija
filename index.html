@@ -821,7 +821,10 @@ function calcHedgeFund(principal, years, grossReturn) {
         }
         data.push(balance);
     }
-    return { final: balance, mgmtFees: totalMgmtFees, perfFees: totalPerfFees, totalFees: totalMgmtFees + totalPerfFees, data };
+    const profit = balance - principal;
+    const gpm = profit > 0 ? profit * 0.15 : 0;
+    const finalAfterTax = balance - gpm;
+    return { final: balance, finalAfterTax, gpm, mgmtFees: totalMgmtFees, perfFees: totalPerfFees, totalFees: totalMgmtFees + totalPerfFees, data };
 }
 
 function calcOutperform(principal, years, grossReturn) {
@@ -863,26 +866,29 @@ function recalculate() {
 
     const advantageVsHedge = outperf.final - hedge.final;
 
-    const hedgeROI = ((hedge.final - principal) / principal * 100).toFixed(1);
+    const hedgeROI = ((hedge.finalAfterTax - principal) / principal * 100).toFixed(1);
     const outperfROI = ((outperf.final - principal) / principal * 100).toFixed(1);
     const spROI = ((sp.final - principal) / principal * 100).toFixed(1);
     const spROIafterTax = ((sp.finalAfterTax - principal) / principal * 100).toFixed(1);
+    const advantageVsHedgeTax = outperf.final - hedge.finalAfterTax;
 
     // Cards
     document.getElementById('projCards').innerHTML = `
         <div class="proj-card">
             <h3>Hedge fondas (2/20)</h3>
-            <div class="fee-desc">2% metinis + 20% nuo pelno kasmet</div>
-            <div class="proj-result blue">${formatNum(hedge.final)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(hedge.final - principal)} &euro;</span> grynasis pelnas</div>
+            <div class="fee-desc">2% metinis + 20% nuo pelno + 15% GPM</div>
+            <div class="proj-result blue">${formatNum(hedge.finalAfterTax)} &euro;</div>
+            <div class="proj-gain"><span class="positive">+${formatNum(hedge.finalAfterTax - principal)} &euro;</span> grynasis pelnas po GPM</div>
             <div style="background:rgba(91,141,239,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
                 <span style="font-size:1.3rem;font-weight:700;color:var(--blue);">${hedgeROI}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža nuo įnašo</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po GPM</span>
             </div>
             <div class="proj-detail">
+                <div class="proj-detail-row"><span>Portfelio vertė prieš GPM</span><span class="val">${formatNum(hedge.final)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Valdymo mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.mgmtFees)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Sėkmės mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.perfFees)} &euro;</span></div>
-                <div class="proj-detail-row"><span>Iš viso mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.totalFees)} &euro;</span></div>
+                <div class="proj-detail-row"><span>GPM 15% nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(hedge.gpm)} &euro;</span></div>
+                <div class="proj-detail-row"><span>Iš viso nuskaičiuota</span><span class="val" style="color:var(--red);">-${formatNum(hedge.totalFees + hedge.gpm)} &euro;</span></div>
             </div>
         </div>
         <div class="proj-card highlight">
@@ -898,7 +904,7 @@ function recalculate() {
                 <div class="proj-detail-row"><span>Vienkartinis mokestis</span><span class="val" style="color:var(--red);">-${formatNum(outperf.entryFee)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Metiniai mokesčiai</span><span class="val" style="color:var(--green);">0 &euro;</span></div>
                 <div class="proj-detail-row"><span>GPM nuo pelno</span><span class="val" style="color:var(--green);">0% (KIS)</span></div>
-                <div class="proj-detail-row"><span>Pranašumas vs hedge</span><span class="val" style="color:var(--gold);">+${formatNum(advantageVsHedge)} &euro;</span></div>
+                <div class="proj-detail-row"><span>Pranašumas vs hedge</span><span class="val" style="color:var(--gold);">+${formatNum(advantageVsHedgeTax)} &euro;</span></div>
             </div>
         </div>
         <div class="proj-card">
@@ -1009,7 +1015,7 @@ function recalculate() {
     // Table
     let tableHTML = `<thead><tr>
         <th>Metai</th>
-        <th>Hedge fondas</th>
+        <th>Hedge po GPM</th>
         <th>ROI</th>
         <th>Outperform X</th>
         <th>ROI</th>
@@ -1019,17 +1025,19 @@ function recalculate() {
     </tr></thead><tbody>`;
 
     for (let y = 0; y <= years; y++) {
-        const diff = outperf.data[y] - hedge.data[y];
-        const hROI = ((hedge.data[y] - principal) / principal * 100).toFixed(1);
+        const hProfit = hedge.data[y] - principal;
+        const hGPM = hProfit > 0 ? hProfit * 0.15 : 0;
+        const hAfterTax = hedge.data[y] - hGPM;
+        const diff = outperf.data[y] - hAfterTax;
+        const hROI = ((hAfterTax - principal) / principal * 100).toFixed(1);
         const oROI = ((outperf.data[y] - principal) / principal * 100).toFixed(1);
-        // S&P po GPM kiekvienais metais
         const spProfit = sp.data[y] - principal;
         const spGPM = spProfit > 0 ? spProfit * 0.15 : 0;
         const spAfterTax = sp.data[y] - spGPM;
         const sROI = ((spAfterTax - principal) / principal * 100).toFixed(1);
         tableHTML += `<tr>
             <td>${y === 0 ? 'Start' : y}</td>
-            <td>${formatNum(hedge.data[y])} &euro;</td>
+            <td>${formatNum(hAfterTax)} &euro;</td>
             <td style="color:${hROI >= 0 ? 'var(--blue)' : 'var(--red)'}">${hROI}%</td>
             <td class="col-highlight">${formatNum(outperf.data[y])} &euro;</td>
             <td style="color:var(--gold);font-weight:600;">${oROI}%</td>

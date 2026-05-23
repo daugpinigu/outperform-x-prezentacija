@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valdytojo rezultatai — KŪB Outperform X</title>
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D48B;
+    --dark: #0A0A0F;
+    --dark-card: #12121A;
+    --dark-border: #1E1E2A;
+    --text: #E8E8EC;
+    --muted: #8888A0;
+    --green: #4CAF50;
+    --red: #E74C3C;
+    --blue: #5B8DEF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--dark); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; width: 100%; background: rgba(10,10,15,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--dark-border); z-index: 100; padding: 0 2rem; }
+  nav .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  nav .logo { font-size: 1.1rem; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-decoration: none; }
+  nav .logo span { color: var(--muted); font-weight: 400; }
+  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav a { color: var(--muted); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.5px; transition: color 0.3s; }
+  nav a:hover, nav a.active { color: var(--gold); }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 100px 2rem 60px; }
+
+  /* HERO */
+  .page-badge { display: inline-block; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3); color: var(--gold); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.35rem 1rem; border-radius: 100px; margin-bottom: 1.5rem; }
+  .page-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; margin-bottom: 0.5rem; }
+  .page-title .accent { color: var(--gold); }
+  .page-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 2.5rem; max-width: 700px; }
+
+  /* PERF STRIP */
+  .perf { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-bottom: 2.5rem; padding: 1.8rem 0; border-top: 2px solid var(--gold); border-bottom: 1px solid var(--dark-border); }
+  .perf-item { text-align: center; padding: 0 1.5rem; border-right: 1px solid var(--dark-border); }
+  .perf-item:last-child { border-right: none; }
+  .perf-label { color: var(--muted); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 0.6rem; }
+  .perf-value { font-size: 2rem; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 0.4rem; }
+  .perf-value.pos { color: var(--gold); }
+  .perf-sub { color: var(--muted); font-size: 0.75rem; }
+
+  /* BENCHMARK */
+  .card { margin-bottom: 2rem; padding: 2rem; background: var(--dark-card); border-radius: 12px; border: 1px solid var(--dark-border); }
+  .card-title { color: var(--muted); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; margin-bottom: 0.4rem; }
+  .card-hint { color: var(--muted); font-size: 0.78rem; margin-bottom: 1.5rem; max-width: 700px; line-height: 1.5; }
+
+  .bk-rows { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+  .bk-row { display: grid; grid-template-columns: 170px 1fr 180px; align-items: center; gap: 1.5rem; }
+  .bk-label { font-size: 0.85rem; font-weight: 600; }
+  .bk-row.you .bk-label { color: var(--gold); }
+  .bk-row.spx .bk-label { color: var(--muted); }
+  .bk-bar-wrap { height: 48px; background: #1a1a28; border-radius: 6px; position: relative; overflow: hidden; }
+  .bk-bar { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 6px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); animation: barGrow 1s cubic-bezier(0.4,0,0.2,1); }
+  @keyframes barGrow { from { width: 0 !important; } }
+  .bk-row.you .bk-bar { background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%); box-shadow: 0 0 24px rgba(201,168,76,0.3); }
+  .bk-row.spx .bk-bar { background: linear-gradient(90deg, #475569 0%, #64748b 100%); opacity: 0.6; }
+  .bk-right { text-align: right; }
+  .bk-value { font-size: 2rem; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -1px; }
+  .bk-row.you .bk-value { color: var(--gold); }
+  .bk-row.spx .bk-value { color: var(--muted); }
+  .bk-meta { display: block; font-size: 0.7rem; color: var(--muted); font-weight: 500; margin-top: 0.4rem; }
+
+  .hero-callout { margin-top: 1.5rem; padding: 1.5rem; background: rgba(201,168,76,0.06); border-radius: 8px; border: 1px solid rgba(201,168,76,0.2); display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; }
+  .hero-multiplier { text-align: center; }
+  .x-big { font-size: 4rem; font-weight: 900; line-height: 0.9; letter-spacing: -3px; color: var(--gold); }
+  .x-label { font-size: 0.6rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-top: 0.3rem; }
+  .hero-text { font-size: 0.9rem; color: #cfd8e3; line-height: 1.55; }
+  .hero-dollar { display: block; font-size: 1.8rem; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; letter-spacing: -0.5px; line-height: 1; margin-bottom: 0.4rem; }
+  .hero-sub { color: var(--muted); font-size: 0.78rem; }
+
+  /* PROJECTION */
+  .card.projection { border-color: rgba(201,168,76,0.25); }
+  .proj-badge { display: inline-block; padding: 2px 8px; margin-left: 8px; background: rgba(201,168,76,0.2); color: var(--gold); font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; border-radius: 4px; vertical-align: middle; }
+  .slider-section { display: grid; grid-template-columns: 200px 1fr; gap: 2rem; align-items: center; margin: 1.5rem 0 1rem; padding: 1.2rem 1.5rem; background: rgba(201,168,76,0.04); border-radius: 8px; border: 1px solid rgba(201,168,76,0.12); }
+  .slider-display { text-align: center; }
+  .slider-num { font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; line-height: 1; color: var(--gold); display: block; }
+  .slider-unit { display: block; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-top: 0.3rem; }
+  input[type=range].slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; background: linear-gradient(to right, var(--gold) 0%, var(--gold) 31%, #1a1a28 31%, #1a1a28 100%); border-radius: 3px; outline: none; cursor: pointer; }
+  input[type=range].slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: var(--gold); border-radius: 50%; cursor: grab; box-shadow: 0 0 0 4px rgba(201,168,76,0.2), 0 0 16px rgba(201,168,76,0.3); }
+  input[type=range].slider::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
+  .slider-marks { display: flex; justify-content: space-between; margin-top: 0.7rem; font-size: 0.65rem; color: var(--muted); }
+  .slider-marks span { cursor: pointer; padding: 2px 4px; transition: color 0.15s; }
+  .slider-marks span:hover { color: var(--gold); }
+
+  .chart-wrap { margin: 1.5rem 0 1rem; padding: 1rem 0.5rem; background: rgba(10,10,15,0.4); border-radius: 8px; border: 1px solid var(--dark-border); }
+  .chart { width: 100%; height: auto; display: block; }
+  .chart-legend { display: flex; gap: 1.5rem; justify-content: center; margin-top: 0.8rem; font-size: 0.78rem; color: #cfd8e3; }
+  .chart-legend .leg { display: flex; align-items: center; gap: 0.5rem; }
+  .chart-legend .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .chart-legend .leg.you .dot { background: var(--gold); box-shadow: 0 0 6px rgba(201,168,76,0.5); }
+  .chart-legend .leg.spx .dot { background: #94a3b8; }
+
+  /* ALLOCATION */
+  .alloc-grid { display: grid; grid-template-columns: 220px 1fr; gap: 3rem; align-items: center; }
+  .donut-wrap { position: relative; width: 220px; height: 220px; }
+  .donut { width: 100%; height: 100%; border-radius: 50%; position: relative; }
+  .donut::after { content: ''; position: absolute; inset: 38px; background: var(--dark-card); border-radius: 50%; }
+  .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 2; text-align: center; pointer-events: none; }
+  .donut-center .big { font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1; }
+  .donut-center .sml { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.3rem; }
+  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem 1.5rem; }
+  .legend-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.82rem; padding: 0.4rem 0.6rem; border-radius: 5px; cursor: default; }
+  .legend-item .ldot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-item .name { flex: 1; color: #cfd8e3; }
+  .legend-item .pct { color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  /* POSITIONS TABLE */
+  .section-header { color: #fff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; }
+  .section-header .meta-inline { color: var(--muted); font-size: 0.75rem; font-weight: 500; margin-left: 1rem; }
+  .tbl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  thead th { text-align: left; color: var(--muted); font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; padding: 0.6rem 0 0.8rem; border-bottom: 1px solid var(--dark-border); }
+  thead th.num { text-align: right; }
+  tbody td { padding: 0.55rem 0; border-bottom: 1px solid rgba(30,30,42,0.5); color: #cfd8e3; vertical-align: top; }
+  tbody td.tk { color: #fff; font-weight: 700; letter-spacing: 0.3px; }
+  tbody td.tk .sub { color: var(--muted); font-weight: 500; font-size: 0.65rem; letter-spacing: 0.8px; display: block; margin-top: 1px; }
+  tbody td.cat { color: var(--muted); font-size: 0.75rem; }
+  tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody td.num .cost { display: block; color: var(--muted); font-size: 0.65rem; font-weight: 500; margin-top: 1px; }
+  tbody td.val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--green); }
+  tbody td.val.neg { color: var(--red); }
+  tbody td.val .pnl { display: block; font-size: 0.65rem; font-weight: 500; margin-top: 1px; opacity: 0.9; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .meta { margin-top: 2rem; display: flex; justify-content: space-between; color: var(--muted); font-size: 0.72rem; }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--dark-border); padding: 2rem; text-align: center; }
+  footer p { font-size: 0.72rem; color: var(--muted); max-width: 800px; margin: 0 auto; line-height: 1.8; }
+
+  @media (max-width: 900px) {
+    .perf { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 0; padding: 1.2rem 0; }
+    .perf-item { padding: 0 1rem; border-right: none; }
+    .perf-item:nth-child(odd) { border-right: 1px solid var(--dark-border); }
+    .perf-value { font-size: 1.5rem; }
+    .bk-row { grid-template-columns: 1fr; gap: 0.5rem; }
+    .bk-right { text-align: left; }
+    .alloc-grid { grid-template-columns: 1fr; gap: 2rem; justify-items: center; }
+    .legend { grid-template-columns: 1fr; }
+    .tbl-grid { grid-template-columns: 1fr; }
+    .slider-section { grid-template-columns: 1fr; gap: 1rem; }
+    nav ul { display: none; }
+    .hero-callout { grid-template-columns: 1fr; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">OUTPERFORM <span>X</span></a>
+    <ul>
+      <li><a href="index.html">Apie fondą</a></li>
+      <li><a href="rezultatai.html" class="active">Valdytojo rezultatai</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-badge">Asmeninis portfelis</div>
+  <div class="page-title">Valdytojo <span class="accent">track record</span></div>
+  <div class="page-sub">Asmeninis portfelio inventorius — DCA strategija nuo 2023 sausio. Tie patys principai, kurie taikomi Outperform X fonde.</div>
+
+  <div class="perf">
+    <div class="perf-item">
+      <div class="perf-label">Bendras pelnas</div>
+      <div class="perf-value pos">+84.6%</div>
+      <div class="perf-sub">+$46,214</div>
+    </div>
+    <div class="perf-item">
+      <div class="perf-label">Metinė grąža (XIRR)</div>
+      <div class="perf-value pos">+38.5%</div>
+      <div class="perf-sub">per metus</div>
+    </div>
+    <div class="perf-item">
+      <div class="perf-label">Investuota</div>
+      <div class="perf-value">$54,619</div>
+      <div class="perf-sub">41 mėn DCA, ~$1,332/mėn</div>
+    </div>
+    <div class="perf-item">
+      <div class="perf-label">Vertė šiandien</div>
+      <div class="perf-value">$100,833</div>
+      <div class="perf-sub">2023.01 – 2026.05</div>
+    </div>
+  </div>
+
+  <!-- BENCHMARK -->
+  <div class="card">
+    <div class="card-title">Pelnas vs S&P 500 benchmark</div>
+    <div class="card-hint">Tą pačią ~$1,332/mėn DCA sumą investavus į S&P 500 indeksą (pasyvi strategija). Įdėtas kapitalas tas pats — <strong style="color:#fff">1.6x didesnis pelnas</strong> dėl aktyvaus pick'inimo.</div>
+    <div class="bk-rows">
+      <div class="bk-row you">
+        <div class="bk-label">Portfelio pelnas</div>
+        <div class="bk-bar-wrap"><div class="bk-bar" style="width:100%"></div></div>
+        <div class="bk-right">
+          <div class="bk-value">+$46,214</div>
+          <span class="bk-meta">+84.6% · vertė $100,833</span>
+        </div>
+      </div>
+      <div class="bk-row spx">
+        <div class="bk-label">S&P 500 pelnas</div>
+        <div class="bk-bar-wrap"><div class="bk-bar" style="width:60.7%"></div></div>
+        <div class="bk-right">
+          <div class="bk-value">+$28,047</div>
+          <span class="bk-meta">+51.4% · vertė $82,666</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-callout">
+      <div class="hero-multiplier">
+        <div class="x-big">1.6x</div>
+        <div class="x-label">daugiau pelno</div>
+      </div>
+      <div class="hero-text">
+        <span class="hero-dollar">+$18,167</span>
+        Tiek didesnis uždarbis nei pasyvi S&P 500 strategija už tą pačią DCA sumą per tą patį laikotarpį.
+        <span class="hero-sub">Aktyvus pick'inimas davė +65% extra grąžą virš S&P 500.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTION -->
+  <div class="card projection">
+    <div class="card-title">Interaktyvi projekcija <span class="proj-badge">Hipotetinė</span></div>
+    <div class="card-hint">Pajudink slankiklį — kaip skirtumas auga laikui bėgant. Portfelis: dabartinis XIRR 38%. S&P 500: ilgalaikis istorinis vidurkis 11%. Tęsiant DCA ~$1,332/mėn.</div>
+
+    <div class="slider-section">
+      <div class="slider-display">
+        <span class="slider-num" id="yearVal">10</span>
+        <span class="slider-unit">metų horizontas</span>
+      </div>
+      <div style="width:100%">
+        <input type="range" min="1" max="30" value="10" step="1" id="yearSlider" class="slider"/>
+        <div class="slider-marks">
+          <span data-y="1">1m</span><span data-y="5">5m</span><span data-y="10">10m</span><span data-y="15">15m</span><span data-y="20">20m</span><span data-y="25">25m</span><span data-y="30">30m</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <svg viewBox="0 0 820 380" class="chart" id="chart" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="youGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="spxGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#64748b" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#64748b" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <g id="gridGroup"></g>
+        <g id="yLabels"></g>
+        <g id="xLabels"></g>
+        <path id="spxArea" fill="url(#spxGrad)"></path>
+        <path id="yourArea" fill="url(#youGrad)"></path>
+        <path id="spxLine" stroke="#94a3b8" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path id="yourLine" stroke="#C9A84C" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="drop-shadow(0 0 6px rgba(201,168,76,0.4))"></path>
+        <circle id="spxDot" r="5" fill="#94a3b8" stroke="#0A0A0F" stroke-width="2"></circle>
+        <circle id="yourDot" r="7" fill="#C9A84C" stroke="#0A0A0F" stroke-width="2" filter="drop-shadow(0 0 6px rgba(201,168,76,0.6))"></circle>
+        <text id="yourLabel" fill="#C9A84C" font-size="14" font-weight="800" text-anchor="end" style="font-family:inherit"></text>
+        <text id="spxLabel" fill="#94a3b8" font-size="12" font-weight="700" text-anchor="end" style="font-family:inherit"></text>
+      </svg>
+      <div class="chart-legend">
+        <span class="leg you"><span class="dot"></span>Portfelis (XIRR 38%)</span>
+        <span class="leg spx"><span class="dot"></span>S&P 500 (istorinis 11%)</span>
+      </div>
+    </div>
+
+    <div class="hero-callout">
+      <div class="hero-multiplier">
+        <div class="x-big" id="heroMult">2.7x</div>
+        <div class="x-label">daugiau po <span id="heroYears">10</span> m.</div>
+      </div>
+      <div class="hero-text">
+        <span class="hero-dollar" id="heroDiff">+$2.42M</span>
+        Portfelio vertė <span id="heroYourVal" style="color:var(--gold);font-weight:700;">$3.86M</span> vs S&P 500 <span id="heroSpxVal" style="font-weight:600;">$1.44M</span> — skirtumas auga eksponentiškai dėl compound efekto.
+        <span class="hero-sub">Aktyvus pick'inimas duoda <span id="heroPct">168%</span> didesnį rezultatą po <span id="heroYearsLabel">10</span> metų.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALLOCATION -->
+  <div class="card">
+    <div class="card-title">Alokacija pagal kategorijas</div>
+    <div class="card-hint">37 pozicijos, 11 kategorijų</div>
+    <div class="alloc-grid">
+      <div class="donut-wrap">
+        <div class="donut" style="background: conic-gradient(
+          #C9A84C 0% 50.87%,
+          #5B8DEF 50.87% 59.90%,
+          #94a3b8 59.90% 67.00%,
+          #fb923c 67.00% 73.24%,
+          #E74C3C 73.24% 79.03%,
+          #f59e0b 79.03% 83.66%,
+          #a855f7 83.66% 88.29%,
+          #4CAF50 88.29% 92.14%,
+          #818cf8 92.14% 95.87%,
+          #ec4899 95.87% 99.00%,
+          #facc15 99.00% 100.00%
+        );"></div>
+        <div class="donut-center">
+          <div class="big">$101K</div>
+          <div class="sml">portfelio vertė</div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="ldot" style="background:#C9A84C"></span><span class="name">Tech akcijos</span><span class="pct">50.9%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#4CAF50"></span><span class="name">Sveikata</span><span class="pct">3.9%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#5B8DEF"></span><span class="name">Finansai</span><span class="pct">9.0%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#818cf8"></span><span class="name">Nasdaq 100 ETF</span><span class="pct">3.7%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#94a3b8"></span><span class="name">Pinigai</span><span class="pct">7.1%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#ec4899"></span><span class="name">Azijos rinka</span><span class="pct">3.1%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#fb923c"></span><span class="name">Kripto</span><span class="pct">6.2%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#a855f7"></span><span class="name">Mažos akcijos</span><span class="pct">4.6%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#E74C3C"></span><span class="name">Kinų akcijos</span><span class="pct">5.8%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#facc15"></span><span class="name">Dividendai</span><span class="pct">1.0%</span></div>
+        <div class="legend-item"><span class="ldot" style="background:#f59e0b"></span><span class="name">Kripto akcijos</span><span class="pct">4.6%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POSITIONS -->
+  <div class="section-header">Dabartinės pozicijos<span class="meta-inline">37 pozicijos · 11 kategorijų</span></div>
+  <div class="tbl-grid">
+    <table>
+      <thead><tr><th>Tikeris</th><th>Kategorija</th><th class="num">Kiekis</th><th class="num">Avg / Inv.</th><th class="num">Vertė / +/-</th></tr></thead>
+      <tbody>
+        <tr><td class="tk">TSLA</td><td class="cat">Tech akcijos</td><td class="num">52</td><td class="num">$270.75<span class="cost">$14,079 inv.</span></td><td class="val">$22,152<span class="pnl">+8,073 (+57%)</span></td></tr>
+        <tr><td class="tk">AMZN</td><td class="cat">Tech akcijos</td><td class="num">45</td><td class="num">$203.58<span class="cost">$9,161 inv.</span></td><td class="val">$11,984<span class="pnl">+2,823 (+31%)</span></td></tr>
+        <tr><td class="tk">NVDA</td><td class="cat">Tech akcijos</td><td class="num">35</td><td class="num">$178.29<span class="cost">$6,240 inv.</span></td><td class="val">$7,537<span class="pnl">+1,297 (+21%)</span></td></tr>
+        <tr><td class="tk">META</td><td class="cat">Tech akcijos</td><td class="num">12</td><td class="num">$522.32<span class="cost">$6,268 inv.</span></td><td class="val">$7,323<span class="pnl">+1,055 (+17%)</span></td></tr>
+        <tr><td class="tk">Cash</td><td class="cat">Pinigai</td><td class="num">—</td><td class="num">—</td><td class="val">$7,163</td></tr>
+        <tr><td class="tk">SOFI</td><td class="cat">Finansai</td><td class="num">300</td><td class="num">$21.31<span class="cost">$6,392 inv.</span></td><td class="val neg">$4,686<span class="pnl">-1,706 (-27%)</span></td></tr>
+        <tr><td class="tk">HOOD</td><td class="cat">Finansai</td><td class="num">60</td><td class="num">$56.27<span class="cost">$3,376 inv.</span></td><td class="val">$4,418<span class="pnl">+1,042 (+31%)</span></td></tr>
+        <tr><td class="tk">BTC<span class="sub">Bitcoin</span></td><td class="cat">Kripto</td><td class="num">0.055</td><td class="num">$33,388<span class="cost">$1,845 inv.</span></td><td class="val">$4,130<span class="pnl">+2,284 (+124%)</span></td></tr>
+        <tr><td class="tk">UNH</td><td class="cat">Sveikata</td><td class="num">10</td><td class="num">$293.11<span class="cost">$2,931 inv.</span></td><td class="val">$3,885<span class="pnl">+954 (+33%)</span></td></tr>
+        <tr><td class="tk">ANAU</td><td class="cat">Nasdaq 100 ETF</td><td class="num">150</td><td class="num">$16.22<span class="cost">$2,433 inv.</span></td><td class="val">$3,764<span class="pnl">+1,330 (+55%)</span></td></tr>
+        <tr><td class="tk">GRAB</td><td class="cat">Azijos rinka</td><td class="num">900</td><td class="num">$4.66<span class="cost">$4,195 inv.</span></td><td class="val neg">$3,159<span class="pnl">-1,036 (-25%)</span></td></tr>
+        <tr><td class="tk">BIDU</td><td class="cat">Kinų akcijos</td><td class="num">20</td><td class="num">$87.29<span class="cost">$1,746 inv.</span></td><td class="val">$2,556<span class="pnl">+810 (+46%)</span></td></tr>
+        <tr><td class="tk">BMNR</td><td class="cat">Kripto akcijos</td><td class="num">130</td><td class="num">$39.04<span class="cost">$5,075 inv.</span></td><td class="val neg">$2,454<span class="pnl">-2,621 (-52%)</span></td></tr>
+        <tr><td class="tk">GOOGL</td><td class="cat">Tech akcijos</td><td class="num">6</td><td class="num">$185.91<span class="cost">$1,115 inv.</span></td><td class="val">$2,298<span class="pnl">+1,182 (+106%)</span></td></tr>
+        <tr><td class="tk">BABA</td><td class="cat">Kinų akcijos</td><td class="num">17</td><td class="num">$77.96<span class="cost">$1,403 inv.</span></td><td class="val">$2,210<span class="pnl">+807 (+58%)</span></td></tr>
+        <tr><td class="tk">VLN</td><td class="cat">Mažos akcijos</td><td class="num">500</td><td class="num">$2.30<span class="cost">$1,149 inv.</span></td><td class="val">$1,610<span class="pnl">+461 (+40%)</span></td></tr>
+        <tr><td class="tk">CLSK</td><td class="cat">Kripto akcijos</td><td class="num">100</td><td class="num">$8.60<span class="cost">$860 inv.</span></td><td class="val">$1,597<span class="pnl">+737 (+86%)</span></td></tr>
+        <tr><td class="tk">LUMN</td><td class="cat">Mažos akcijos</td><td class="num">150</td><td class="num">$8.49<span class="cost">$1,274 inv.</span></td><td class="val">$1,412<span class="pnl">+138 (+11%)</span></td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>Tikeris</th><th>Kategorija</th><th class="num">Kiekis</th><th class="num">Avg / Inv.</th><th class="num">Vertė / +/-</th></tr></thead>
+      <tbody>
+        <tr><td class="tk">JD</td><td class="cat">Kinų akcijos</td><td class="num">35</td><td class="num">$36.29<span class="cost">$1,270 inv.</span></td><td class="val neg">$1,068<span class="pnl">-202 (-16%)</span></td></tr>
+        <tr><td class="tk">SBET</td><td class="cat">Kripto akcijos</td><td class="num">100</td><td class="num">$18.29<span class="cost">$1,829 inv.</span></td><td class="val neg">$623<span class="pnl">-1,206 (-66%)</span></td></tr>
+        <tr><td class="tk">SOL<span class="sub">Solana</span></td><td class="cat">Kripto</td><td class="num">7</td><td class="num">$147.36<span class="cost">$1,032 inv.</span></td><td class="val neg">$576<span class="pnl">-456 (-44%)</span></td></tr>
+        <tr><td class="tk">TAO<span class="sub">Bittensor</span></td><td class="cat">Kripto</td><td class="num">2</td><td class="num">$286.10<span class="cost">$572 inv.</span></td><td class="val neg">$521<span class="pnl">-51 (-9%)</span></td></tr>
+        <tr><td class="tk">LINK<span class="sub">Chainlink</span></td><td class="cat">Kripto</td><td class="num">56.5</td><td class="num">$10.89<span class="cost">$616 inv.</span></td><td class="val neg">$520<span class="pnl">-96 (-16%)</span></td></tr>
+        <tr><td class="tk">Divai 2024</td><td class="cat">Dividendai</td><td class="num">—</td><td class="num">—</td><td class="val">$503</td></tr>
+        <tr><td class="tk">GME</td><td class="cat">Mažos akcijos</td><td class="num">20</td><td class="num">$17.95<span class="cost">$359 inv.</span></td><td class="val">$439<span class="pnl">+80 (+22%)</span></td></tr>
+        <tr><td class="tk">3LMI</td><td class="cat">Mažos akcijos</td><td class="num">880</td><td class="num">$3.06<span class="cost">$2,693 inv.</span></td><td class="val neg">$405<span class="pnl">-2,288 (-85%)</span></td></tr>
+        <tr><td class="tk">Divai 2025</td><td class="cat">Dividendai</td><td class="num">—</td><td class="num">—</td><td class="val">$369</td></tr>
+        <tr><td class="tk">TSL3</td><td class="cat">Mažos akcijos</td><td class="num">25</td><td class="num">$14.06<span class="cost">$352 inv.</span></td><td class="val">$366<span class="pnl">+14 (+4%)</span></td></tr>
+        <tr><td class="tk">ALGS</td><td class="cat">Mažos akcijos</td><td class="num">38</td><td class="num">$25.74<span class="cost">$978 inv.</span></td><td class="val neg">$219<span class="pnl">-759 (-78%)</span></td></tr>
+        <tr><td class="tk">TRX<span class="sub">Tron</span></td><td class="cat">Kripto</td><td class="num">483</td><td class="num">$0.31<span class="cost">$149 inv.</span></td><td class="val">$173<span class="pnl">+25 (+17%)</span></td></tr>
+        <tr><td class="tk">Divai 2023</td><td class="cat">Dividendai</td><td class="num">—</td><td class="num">—</td><td class="val">$133</td></tr>
+        <tr><td class="tk">DOGE<span class="sub">Dogecoin</span></td><td class="cat">Kripto</td><td class="num">1,288</td><td class="num">$0.24<span class="cost">$308 inv.</span></td><td class="val neg">$128<span class="pnl">-180 (-58%)</span></td></tr>
+        <tr><td class="tk">AVAX<span class="sub">Avalanche</span></td><td class="cat">Kripto</td><td class="num">9.3</td><td class="num">$30.31<span class="cost">$281 inv.</span></td><td class="val neg">$83<span class="pnl">-199 (-71%)</span></td></tr>
+        <tr><td class="tk">RVPH</td><td class="cat">Mažos akcijos</td><td class="num">200</td><td class="num">$2.85<span class="cost">$570 inv.</span></td><td class="val neg">$83<span class="pnl">-487 (-85%)</span></td></tr>
+        <tr><td class="tk">NXL</td><td class="cat">Mažos akcijos</td><td class="num">184</td><td class="num">$2.49<span class="cost">$458 inv.</span></td><td class="val neg">$70<span class="pnl">-388 (-85%)</span></td></tr>
+        <tr><td class="tk">BIVI</td><td class="cat">Mažos akcijos</td><td class="num">28</td><td class="num">$32.74<span class="cost">$920 inv.</span></td><td class="val neg">$43<span class="pnl">-877 (-95%)</span></td></tr>
+        <tr><td class="tk">CLDI</td><td class="cat">Mažos akcijos</td><td class="num">100</td><td class="num">$1.12<span class="cost">$112 inv.</span></td><td class="val neg">$18<span class="pnl">-94 (-84%)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="meta">
+    <div>Valdytojo asmeninis portfelis — ne fondo pozicijos</div>
+    <div>Atnaujinta 2026-05-23</div>
+  </div>
+</div>
+
+<footer>
+  <p>Šie duomenys atspindi valdytojo asmeninį portfelį, ne KŪB Outperform X fondo pozicijas. Praeities rezultatai negarantuoja ateities grąžos. Investavimas susijęs su rizika.</p>
+</footer>
+
+<script>
+(function() {
+  const CV = 100833.24, SV = 82666, PMT = 1332.17;
+  const YR = 0.385, SR = 0.11;
+  const W = 820, H = 380, PL = 70, PR = 30, PT = 20, PB = 40;
+  const iW = W-PL-PR, iH = H-PT-PB;
+  const slider = document.getElementById('yearSlider');
+
+  function fv(pv, pmt, ar, m) {
+    if (m <= 0) return pv;
+    const mr = Math.pow(1+ar, 1/12)-1;
+    return pv*Math.pow(1+mr,m) + pmt*(Math.pow(1+mr,m)-1)/mr*(1+mr);
+  }
+  function fmt(v) {
+    if (v>=1e6) return '$'+(v/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';
+    if (v>=1e3) return '$'+Math.round(v/1e3).toLocaleString('en-US')+'K';
+    return '$'+Math.round(v).toLocaleString('en-US');
+  }
+
+  function render(years) {
+    const months = years*12;
+    const steps = Math.min(160, Math.max(months, 40));
+    const yP=[], sP=[];
+    for (let i=0; i<=steps; i++) {
+      const m = (months/steps)*i;
+      yP.push({x:m/12, y:fv(CV,PMT,YR,m)});
+      sP.push({x:m/12, y:fv(SV,PMT,SR,m)});
+    }
+    const yF=yP[yP.length-1].y, sF=sP[sP.length-1].y, yMax=yF*1.08;
+    const xS=x=>PL+(x/years)*iW, yS=y=>PT+iH-(y/yMax)*iH;
+    const path=pts=>pts.map((p,i)=>(i===0?'M':'L')+' '+xS(p.x).toFixed(1)+' '+yS(p.y).toFixed(1)).join(' ');
+    const area=pts=>path(pts)+' L '+xS(years).toFixed(1)+' '+yS(0).toFixed(1)+' L '+xS(0).toFixed(1)+' '+yS(0).toFixed(1)+' Z';
+
+    document.getElementById('yourLine').setAttribute('d',path(yP));
+    document.getElementById('spxLine').setAttribute('d',path(sP));
+    document.getElementById('yourArea').setAttribute('d',area(yP));
+    document.getElementById('spxArea').setAttribute('d',area(sP));
+    document.getElementById('yourDot').setAttribute('cx',xS(years));
+    document.getElementById('yourDot').setAttribute('cy',yS(yF));
+    document.getElementById('spxDot').setAttribute('cx',xS(years));
+    document.getElementById('spxDot').setAttribute('cy',yS(sF));
+    const yL=document.getElementById('yourLabel'); yL.setAttribute('x',xS(years)-10); yL.setAttribute('y',yS(yF)-14); yL.textContent=fmt(yF);
+    const sL=document.getElementById('spxLabel'); sL.setAttribute('x',xS(years)-10); sL.setAttribute('y',yS(sF)-14); sL.textContent=fmt(sF);
+
+    let gH='',yLab='';
+    for(let i=0;i<=5;i++){const v=(yMax/5)*i,y=yS(v);gH+='<line x1="'+PL+'" y1="'+y+'" x2="'+(W-PR)+'" y2="'+y+'" stroke="#1E1E2A" stroke-width="0.5"/>';yLab+='<text x="'+(PL-10)+'" y="'+(y+4)+'" fill="#8888A0" font-size="11" text-anchor="end" style="font-family:inherit">'+fmt(v)+'</text>';}
+    document.getElementById('gridGroup').innerHTML=gH;
+    document.getElementById('yLabels').innerHTML=yLab;
+
+    let xLab='';const xN=Math.min(years,6);
+    for(let i=0;i<=xN;i++){const yr=(years/xN)*i;xLab+='<text x="'+xS(yr)+'" y="'+(H-PB+22)+'" fill="#8888A0" font-size="11" text-anchor="middle" style="font-family:inherit">'+yr.toFixed(0)+'m</text>';}
+    document.getElementById('xLabels').innerHTML=xLab;
+
+    const sp=((years-1)/29*100).toFixed(1);
+    slider.style.background='linear-gradient(to right,#C9A84C 0%,#C9A84C '+sp+'%,#1a1a28 '+sp+'%,#1a1a28 100%)';
+
+    document.getElementById('yearVal').textContent=years;
+    document.getElementById('heroMult').textContent=(yF/sF).toFixed(1)+'x';
+    document.getElementById('heroYears').textContent=years;
+    document.getElementById('heroYearsLabel').textContent=years;
+    document.getElementById('heroDiff').textContent='+'+fmt(yF-sF);
+    document.getElementById('heroYourVal').textContent=fmt(yF);
+    document.getElementById('heroSpxVal').textContent=fmt(sF);
+    document.getElementById('heroPct').textContent=((yF/sF-1)*100).toFixed(0)+'%';
+  }
+
+  slider.addEventListener('input',e=>render(parseInt(e.target.value)));
+  document.querySelectorAll('.slider-marks span').forEach(s=>{
+    s.addEventListener('click',()=>{slider.value=parseInt(s.dataset.y);render(parseInt(s.dataset.y));});
+  });
+  render(10);
+})();
+</script>
+</body>
+</html>

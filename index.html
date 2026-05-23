@@ -557,6 +557,16 @@
     <div class="section-title">Trijų scenarijų palyginimas</div>
     <div class="section-desc">Identiška pradinė investicija, skirtingi mokesčių modeliai. Pažiūrėkite, kiek mokesčių struktūra lemia galutinį rezultatą.</div>
 
+    <div class="investor-toggle" style="display:flex;gap:0;margin-bottom:1.5rem;background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;overflow:hidden;width:fit-content;">
+        <button id="btnFizinis" onclick="setInvestorType('fizinis')" class="toggle-btn active" style="padding:0.7rem 1.8rem;border:none;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.3s;">Fizinis asmuo</button>
+        <button id="btnJuridinis" onclick="setInvestorType('juridinis')" class="toggle-btn" style="padding:0.7rem 1.8rem;border:none;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.3s;">Juridinis asmuo</button>
+    </div>
+    <style>
+        .toggle-btn { background: transparent; color: var(--text-muted); }
+        .toggle-btn.active { background: var(--gold); color: var(--dark); }
+        .toggle-btn:hover:not(.active) { color: var(--text); }
+    </style>
+
     <div class="projection-controls">
         <div>
             <label>Pradinis įnašas (EUR)</label><br>
@@ -793,6 +803,15 @@
 </footer>
 
 <script>
+let investorType = 'fizinis';
+
+function setInvestorType(type) {
+    investorType = type;
+    document.getElementById('btnFizinis').classList.toggle('active', type === 'fizinis');
+    document.getElementById('btnJuridinis').classList.toggle('active', type === 'juridinis');
+    recalculate();
+}
+
 function formatNum(n) {
     return Math.round(n).toLocaleString('lt-LT');
 }
@@ -866,59 +885,85 @@ function recalculate() {
 
     const advantageVsHedge = outperf.final - hedge.final;
 
-    const hedgeROI = ((hedge.finalAfterTax - principal) / principal * 100).toFixed(1);
-    const outperfROI = ((outperf.final - principal) / principal * 100).toFixed(1);
-    const spROI = ((sp.final - principal) / principal * 100).toFixed(1);
-    const spROIafterTax = ((sp.finalAfterTax - principal) / principal * 100).toFixed(1);
-    const advantageVsHedgeTax = outperf.final - hedge.finalAfterTax;
+    // Tax logic based on investor type
+    // Fizinis: 15% GPM on all three
+    // Juridinis: 15% on hedge & S&P, 0% on Outperform (KIS saves 17%)
+    const taxRateHedge = 0.15;
+    const taxRateSP = 0.15;
+    const taxRateOutperform = investorType === 'fizinis' ? 0.15 : 0;
+    const kisSavedRate = 0.17; // juridinis saves 17% pelno mokestis via KIS
+
+    const hedgeProfit = hedge.final - principal;
+    const hedgeGPM = hedgeProfit > 0 ? hedgeProfit * taxRateHedge : 0;
+    const hedgeFinalNet = hedge.final - hedgeGPM;
+
+    const outperfProfit = outperf.final - principal;
+    const outperfGPM = outperfProfit > 0 ? outperfProfit * taxRateOutperform : 0;
+    const outperfFinalNet = outperf.final - outperfGPM;
+    const outperfKISSaved = investorType === 'juridinis' && outperfProfit > 0 ? outperfProfit * kisSavedRate : 0;
+
+    const spGPMfinal = sp.gpm; // already calculated at 15%
+    const spFinalNet = sp.finalAfterTax;
+
+    const hedgeROI = ((hedgeFinalNet - principal) / principal * 100).toFixed(1);
+    const outperfROI = ((outperfFinalNet - principal) / principal * 100).toFixed(1);
+    const spROIafterTax = ((spFinalNet - principal) / principal * 100).toFixed(1);
+    const advantageVsHedgeTax = outperfFinalNet - hedgeFinalNet;
+
+    const taxLabel = investorType === 'fizinis' ? 'GPM' : 'pelno mokestis';
+    const taxPctLabel = investorType === 'fizinis' ? '15% GPM' : '15% pelno mok.';
 
     // Cards
     document.getElementById('projCards').innerHTML = `
         <div class="proj-card">
             <h3>Hedge fondas (2/20)</h3>
-            <div class="fee-desc">2% metinis + 20% nuo pelno + 15% GPM</div>
-            <div class="proj-result blue">${formatNum(hedge.finalAfterTax)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(hedge.finalAfterTax - principal)} &euro;</span> grynasis pelnas po GPM</div>
+            <div class="fee-desc">2% metinis + 20% nuo pelno + ${taxPctLabel}</div>
+            <div class="proj-result blue">${formatNum(hedgeFinalNet)} &euro;</div>
+            <div class="proj-gain"><span class="positive">+${formatNum(hedgeFinalNet - principal)} &euro;</span> grynasis pelnas po mokesčių</div>
             <div style="background:rgba(91,141,239,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
                 <span style="font-size:1.3rem;font-weight:700;color:var(--blue);">${hedgeROI}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po GPM</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po mokesčių</span>
             </div>
             <div class="proj-detail">
-                <div class="proj-detail-row"><span>Portfelio vertė prieš GPM</span><span class="val">${formatNum(hedge.final)} &euro;</span></div>
+                <div class="proj-detail-row"><span>Portfelio vertė prieš mokesčius</span><span class="val">${formatNum(hedge.final)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Valdymo mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.mgmtFees)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Sėkmės mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.perfFees)} &euro;</span></div>
-                <div class="proj-detail-row"><span>GPM 15% nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(hedge.gpm)} &euro;</span></div>
-                <div class="proj-detail-row"><span>Iš viso nuskaičiuota</span><span class="val" style="color:var(--red);">-${formatNum(hedge.totalFees + hedge.gpm)} &euro;</span></div>
+                <div class="proj-detail-row"><span>${taxPctLabel} nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(hedgeGPM)} &euro;</span></div>
+                <div class="proj-detail-row"><span>Iš viso nuskaičiuota</span><span class="val" style="color:var(--red);">-${formatNum(hedge.totalFees + hedgeGPM)} &euro;</span></div>
             </div>
         </div>
         <div class="proj-card highlight">
             <h3>Outperform X <span style="font-size:0.7rem;color:var(--gold);font-weight:400;">KIS</span></h3>
-            <div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis, 0% GPM</div>
-            <div class="proj-result gold">${formatNum(outperf.final)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(outperf.final - principal)} &euro;</span> grynasis pelnas</div>
+            <div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis${investorType === 'juridinis' ? ', 0% pelno mok. (KIS)' : ', 15% GPM'}</div>
+            <div class="proj-result gold">${formatNum(outperfFinalNet)} &euro;</div>
+            <div class="proj-gain"><span class="positive">+${formatNum(outperfFinalNet - principal)} &euro;</span> grynasis pelnas po mokesčių</div>
             <div style="background:rgba(201,168,76,0.12);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
                 <span style="font-size:1.3rem;font-weight:700;color:var(--gold);">${outperfROI}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža nuo įnašo</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po mokesčių</span>
             </div>
             <div class="proj-detail">
                 <div class="proj-detail-row"><span>Vienkartinis mokestis</span><span class="val" style="color:var(--red);">-${formatNum(outperf.entryFee)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Metiniai mokesčiai</span><span class="val" style="color:var(--green);">0 &euro;</span></div>
-                <div class="proj-detail-row"><span>GPM nuo pelno</span><span class="val" style="color:var(--green);">0% (KIS)</span></div>
+                ${investorType === 'fizinis'
+                    ? `<div class="proj-detail-row"><span>GPM 15% nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(outperfGPM)} &euro;</span></div>`
+                    : `<div class="proj-detail-row"><span>Pelno mokestis</span><span class="val" style="color:var(--green);">0% (KIS)</span></div>
+                       <div class="proj-detail-row"><span>Sutaupote (17%)</span><span class="val" style="color:var(--green);">+${formatNum(outperfKISSaved)} &euro;</span></div>`
+                }
                 <div class="proj-detail-row"><span>Pranašumas vs hedge</span><span class="val" style="color:var(--gold);">+${formatNum(advantageVsHedgeTax)} &euro;</span></div>
             </div>
         </div>
         <div class="proj-card">
             <h3>S&P 500 (ETF)</h3>
-            <div class="fee-desc">${spReturn}% grąža (po 0.03% TER), 15% GPM nuo pelno</div>
-            <div class="proj-result muted">${formatNum(sp.finalAfterTax)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(sp.finalAfterTax - principal)} &euro;</span> grynasis pelnas po GPM</div>
+            <div class="fee-desc">${spReturn}% grąža (po 0.03% TER), ${taxPctLabel} nuo pelno</div>
+            <div class="proj-result muted">${formatNum(spFinalNet)} &euro;</div>
+            <div class="proj-gain"><span class="positive">+${formatNum(spFinalNet - principal)} &euro;</span> grynasis pelnas po mokesčių</div>
             <div style="background:rgba(136,136,160,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
                 <span style="font-size:1.3rem;font-weight:700;color:var(--text-muted);">${spROIafterTax}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po GPM</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po mokesčių</span>
             </div>
             <div class="proj-detail">
-                <div class="proj-detail-row"><span>Portfelio vertė prieš GPM</span><span class="val">${formatNum(sp.final)} &euro;</span></div>
-                <div class="proj-detail-row"><span>GPM 15% nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(sp.gpm)} &euro;</span></div>
+                <div class="proj-detail-row"><span>Portfelio vertė prieš mokesčius</span><span class="val">${formatNum(sp.final)} &euro;</span></div>
+                <div class="proj-detail-row"><span>${taxPctLabel} nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(spGPMfinal)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Aktyvus valdymas</span><span class="val">Ne</span></div>
                 <div class="proj-detail-row"><span>Opcionų strategijos</span><span class="val">Ne</span></div>
             </div>
@@ -1015,31 +1060,34 @@ function recalculate() {
     // Table
     let tableHTML = `<thead><tr>
         <th>Metai</th>
-        <th>Hedge po GPM</th>
+        <th>Hedge po mok.</th>
         <th>ROI</th>
         <th>Outperform X</th>
         <th>ROI</th>
-        <th>S&P 500 po GPM</th>
+        <th>S&P 500 po mok.</th>
         <th>ROI</th>
         <th>Outperform vs Hedge</th>
     </tr></thead><tbody>`;
 
     for (let y = 0; y <= years; y++) {
         const hProfit = hedge.data[y] - principal;
-        const hGPM = hProfit > 0 ? hProfit * 0.15 : 0;
-        const hAfterTax = hedge.data[y] - hGPM;
-        const diff = outperf.data[y] - hAfterTax;
+        const hTax = hProfit > 0 ? hProfit * taxRateHedge : 0;
+        const hAfterTax = hedge.data[y] - hTax;
+        const oProfit = outperf.data[y] - principal;
+        const oTax = oProfit > 0 ? oProfit * taxRateOutperform : 0;
+        const oAfterTax = outperf.data[y] - oTax;
+        const diff = oAfterTax - hAfterTax;
         const hROI = ((hAfterTax - principal) / principal * 100).toFixed(1);
-        const oROI = ((outperf.data[y] - principal) / principal * 100).toFixed(1);
+        const oROI = ((oAfterTax - principal) / principal * 100).toFixed(1);
         const spProfit = sp.data[y] - principal;
-        const spGPM = spProfit > 0 ? spProfit * 0.15 : 0;
-        const spAfterTax = sp.data[y] - spGPM;
+        const spTax = spProfit > 0 ? spProfit * taxRateSP : 0;
+        const spAfterTax = sp.data[y] - spTax;
         const sROI = ((spAfterTax - principal) / principal * 100).toFixed(1);
         tableHTML += `<tr>
             <td>${y === 0 ? 'Start' : y}</td>
             <td>${formatNum(hAfterTax)} &euro;</td>
             <td style="color:${hROI >= 0 ? 'var(--blue)' : 'var(--red)'}">${hROI}%</td>
-            <td class="col-highlight">${formatNum(outperf.data[y])} &euro;</td>
+            <td class="col-highlight">${formatNum(oAfterTax)} &euro;</td>
             <td style="color:var(--gold);font-weight:600;">${oROI}%</td>
             <td>${formatNum(spAfterTax)} &euro;</td>
             <td style="color:var(--text-muted)">${sROI}%</td>

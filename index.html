@@ -888,10 +888,11 @@ function recalculate() {
     // Tax logic based on investor type
     // Fizinis: 15% GPM on all three
     // Juridinis: 15% on hedge & S&P, 0% on Outperform (KIS saves 17%)
-    const taxRateHedge = 0.15;
-    const taxRateSP = 0.15;
-    const taxRateOutperform = investorType === 'fizinis' ? 0.15 : 0;
-    const kisSavedRate = 0.17; // juridinis saves 17% pelno mokestis via KIS
+    const isFizinis = investorType === 'fizinis';
+    const taxRateHedge = isFizinis ? 0 : 0.15;
+    const taxRateSP = isFizinis ? 0 : 0.15;
+    const taxRateOutperform = 0;
+    const kisSavedRate = 0.17;
 
     const hedgeProfit = hedge.final - principal;
     const hedgeGPM = hedgeProfit > 0 ? hedgeProfit * taxRateHedge : 0;
@@ -917,53 +918,53 @@ function recalculate() {
     document.getElementById('projCards').innerHTML = `
         <div class="proj-card">
             <h3>Hedge fondas (2/20)</h3>
-            <div class="fee-desc">2% metinis + 20% nuo pelno + ${taxPctLabel}</div>
+            <div class="fee-desc">2% metinis + 20% nuo pelno${isFizinis ? '' : ' + 15% pelno mok.'}</div>
             <div class="proj-result blue">${formatNum(hedgeFinalNet)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(hedgeFinalNet - principal)} &euro;</span> grynasis pelnas po mokesčių</div>
+            <div class="proj-gain"><span class="positive">+${formatNum(hedgeFinalNet - principal)} &euro;</span> grynasis pelnas${isFizinis ? '' : ' po mokesčių'}</div>
             <div style="background:rgba(91,141,239,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
                 <span style="font-size:1.3rem;font-weight:700;color:var(--blue);">${hedgeROI}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po mokesčių</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža${isFizinis ? '' : ' po mokesčių'}</span>
             </div>
             <div class="proj-detail">
-                <div class="proj-detail-row"><span>Portfelio vertė prieš mokesčius</span><span class="val">${formatNum(hedge.final)} &euro;</span></div>
+                ${!isFizinis ? `<div class="proj-detail-row"><span>Portfelio vertė prieš mokesčius</span><span class="val">${formatNum(hedge.final)} &euro;</span></div>` : ''}
                 <div class="proj-detail-row"><span>Valdymo mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.mgmtFees)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Sėkmės mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.perfFees)} &euro;</span></div>
-                <div class="proj-detail-row"><span>${taxPctLabel} nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(hedgeGPM)} &euro;</span></div>
+                ${!isFizinis ? `<div class="proj-detail-row"><span>15% pelno mok.</span><span class="val" style="color:var(--red);">-${formatNum(hedgeGPM)} &euro;</span></div>` : ''}
                 <div class="proj-detail-row"><span>Iš viso nuskaičiuota</span><span class="val" style="color:var(--red);">-${formatNum(hedge.totalFees + hedgeGPM)} &euro;</span></div>
             </div>
         </div>
         <div class="proj-card highlight">
             <h3>Outperform X <span style="font-size:0.7rem;color:var(--gold);font-weight:400;">KIS</span></h3>
-            <div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis${investorType === 'juridinis' ? ', 0% pelno mok. (KIS)' : ', 15% GPM'}</div>
+            <div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis${!isFizinis ? ', 0% pelno mok. (KIS)' : ''}</div>
             <div class="proj-result gold">${formatNum(outperfFinalNet)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(outperfFinalNet - principal)} &euro;</span> grynasis pelnas po mokesčių</div>
+            <div class="proj-gain"><span class="positive">+${formatNum(outperfFinalNet - principal)} &euro;</span> grynasis pelnas</div>
             <div style="background:rgba(201,168,76,0.12);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
                 <span style="font-size:1.3rem;font-weight:700;color:var(--gold);">${outperfROI}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po mokesčių</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža</span>
             </div>
             <div class="proj-detail">
                 <div class="proj-detail-row"><span>Vienkartinis mokestis</span><span class="val" style="color:var(--red);">-${formatNum(outperf.entryFee)} &euro;</span></div>
                 <div class="proj-detail-row"><span>Metiniai mokesčiai</span><span class="val" style="color:var(--green);">0 &euro;</span></div>
-                ${investorType === 'fizinis'
-                    ? `<div class="proj-detail-row"><span>GPM 15% nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(outperfGPM)} &euro;</span></div>`
-                    : `<div class="proj-detail-row"><span>Pelno mokestis</span><span class="val" style="color:var(--green);">0% (KIS)</span></div>
+                ${!isFizinis
+                    ? `<div class="proj-detail-row"><span>Pelno mokestis</span><span class="val" style="color:var(--green);">0% (KIS)</span></div>
                        <div class="proj-detail-row"><span>Sutaupote (17%)</span><span class="val" style="color:var(--green);">+${formatNum(outperfKISSaved)} &euro;</span></div>`
+                    : ''
                 }
                 <div class="proj-detail-row"><span>Pranašumas vs hedge</span><span class="val" style="color:var(--gold);">+${formatNum(advantageVsHedgeTax)} &euro;</span></div>
             </div>
         </div>
         <div class="proj-card">
             <h3>S&P 500 (ETF)</h3>
-            <div class="fee-desc">${spReturn}% grąža (po 0.03% TER), ${taxPctLabel} nuo pelno</div>
+            <div class="fee-desc">${spReturn}% grąža (po 0.03% TER)${!isFizinis ? ', 15% pelno mok.' : ''}</div>
             <div class="proj-result muted">${formatNum(spFinalNet)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(spFinalNet - principal)} &euro;</span> grynasis pelnas po mokesčių</div>
+            <div class="proj-gain"><span class="positive">+${formatNum(spFinalNet - principal)} &euro;</span> grynasis pelnas${!isFizinis ? ' po mokesčių' : ''}</div>
             <div style="background:rgba(136,136,160,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
                 <span style="font-size:1.3rem;font-weight:700;color:var(--text-muted);">${spROIafterTax}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža po mokesčių</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža${!isFizinis ? ' po mokesčių' : ''}</span>
             </div>
             <div class="proj-detail">
-                <div class="proj-detail-row"><span>Portfelio vertė prieš mokesčius</span><span class="val">${formatNum(sp.final)} &euro;</span></div>
-                <div class="proj-detail-row"><span>${taxPctLabel} nuo pelno</span><span class="val" style="color:var(--red);">-${formatNum(spGPMfinal)} &euro;</span></div>
+                ${!isFizinis ? `<div class="proj-detail-row"><span>Portfelio vertė prieš mokesčius</span><span class="val">${formatNum(sp.final)} &euro;</span></div>
+                <div class="proj-detail-row"><span>15% pelno mok.</span><span class="val" style="color:var(--red);">-${formatNum(spGPMfinal)} &euro;</span></div>` : ''}
                 <div class="proj-detail-row"><span>Aktyvus valdymas</span><span class="val">Ne</span></div>
                 <div class="proj-detail-row"><span>Opcionų strategijos</span><span class="val">Ne</span></div>
             </div>

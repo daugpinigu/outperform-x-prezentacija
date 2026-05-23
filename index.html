@@ -903,8 +903,9 @@ function recalculate() {
     const outperfFinalNet = outperf.final - outperfGPM;
     const outperfKISSaved = investorType === 'juridinis' && outperfProfit > 0 ? outperfProfit * kisSavedRate : 0;
 
-    const spGPMfinal = sp.gpm; // already calculated at 15%
-    const spFinalNet = sp.finalAfterTax;
+    const spProfitFinal = sp.final - principal;
+    const spGPMfinal = spProfitFinal > 0 ? spProfitFinal * taxRateSP : 0;
+    const spFinalNet = sp.final - spGPMfinal;
 
     const hedgeROI = ((hedgeFinalNet - principal) / principal * 100).toFixed(1);
     const outperfROI = ((outperfFinalNet - principal) / principal * 100).toFixed(1);

@@ -211,6 +211,24 @@ section { padding: var(--section-y) 0; }
 .strat-card h3 { font-size: 20px; line-height: 1.2; margin: 0 0 12px; text-wrap: balance; }
 .strat-card p { font-size: 15px; line-height: 1.55; color: var(--muted); }
 
+/* ---------- scenarijai ---------- */
+.scen-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.scen-card { background: var(--card); border-radius: 20px; padding: 26px 22px 24px; min-width: 0; display: flex; flex-direction: column; }
+.scen-name { font-size: 15px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+.scen-rate { font-size: 13px; color: var(--muted); margin: 0 0 22px; flex: 1; }
+.scen-value { font-size: clamp(24px, 2.1vw, 30px); font-weight: 700; letter-spacing: -.03em; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; margin: 0 0 10px; }
+.scen-mult { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.scen-mult .pos { color: var(--green); font-weight: 600; }
+.scen-mult .neg { color: var(--loss); font-weight: 600; }
+.scen-card.target { background: var(--ink); }
+.scen-card.target .scen-name, .scen-card.target .scen-value { color: var(--cream); }
+.scen-card.target .scen-rate, .scen-card.target .scen-mult { color: var(--cream-on-ink); }
+.scen-card.target .scen-mult .pos { color: #7ccf9a; }
+.scen-card.spx { background: var(--cream-deep); }
+.scen-card.spx .scen-value { color: var(--ink-soft); }
+.scen-card.bad .scen-value { color: var(--muted); }
+.scen-note { max-width: 62ch; margin: 28px auto 0; text-align: center; font-size: 15px; line-height: 1.55; color: var(--muted); }
+
 /* ---------- mokesčiai ---------- */
 .fee-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; align-items: stretch; }
 .fee-card { background: var(--card); border-radius: var(--r-card); padding: 36px 34px; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
@@ -609,6 +627,7 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
   .projection-controls { grid-template-columns: repeat(2, 1fr); }
   .projection-controls .btn-row { grid-column: span 2; }
   .strategy-grid { grid-template-columns: 1fr 1fr; }
+  .scen-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 900px) {
   .stats { grid-template-columns: 1fr 1fr; row-gap: 32px; padding-top: 32px; }
@@ -639,6 +658,7 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
 @media (max-width: 720px) {
   .hero { padding-top: 56px; }
   .strategy-grid { grid-template-columns: 1fr; }
+  .scen-grid { grid-template-columns: 1fr 1fr; }
   .investor-toggle { width: 100%; }
   .toggle-btn { flex: 1; min-width: 0; padding-inline: 12px; }
   .table-scroll { padding: 0 20px 12px; }

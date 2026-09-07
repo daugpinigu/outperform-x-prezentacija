@@ -1,1172 +1,632 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OUTPERFORM FONDAS</title>
-    <style>
-        :root {
-            --gold: #C9A84C;
-            --gold-light: #E8D48B;
-            --dark: #0A0A0F;
-            --dark-card: #12121A;
-            --dark-border: #1E1E2A;
-            --text: #E8E8EC;
-            --text-muted: #8888A0;
-            --green: #4CAF50;
-            --red: #E74C3C;
-            --blue: #5B8DEF;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--dark);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* NAV */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(10, 10, 15, 0.92);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--dark-border);
-            z-index: 100;
-            padding: 0 2rem;
-        }
-        nav .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-        nav .logo {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--gold);
-            letter-spacing: 1px;
-        }
-        nav .logo span { color: var(--text-muted); font-weight: 400; }
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-        }
-        nav a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-            transition: color 0.3s;
-        }
-        nav a:hover { color: var(--gold); }
-
-        /* SECTIONS */
-        section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 6rem 2rem;
-        }
-
-        /* HERO */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-        .hero-badge {
-            display: inline-block;
-            background: rgba(201, 168, 76, 0.1);
-            border: 1px solid rgba(201, 168, 76, 0.3);
-            color: var(--gold);
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 0.4rem 1rem;
-            border-radius: 100px;
-            margin-bottom: 2rem;
-            width: fit-content;
-        }
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-        }
-        .hero h1 .accent { color: var(--gold); }
-        .hero p {
-            font-size: 1.15rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin-bottom: 3rem;
-        }
-        .hero-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            border-top: 1px solid var(--dark-border);
-            padding-top: 3rem;
-        }
-        .hero-stat .number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--gold);
-        }
-        .hero-stat .label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.3rem;
-        }
-
-        /* SECTION HEADERS */
-        .section-label {
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 0.8rem;
-        }
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        .section-desc {
-            color: var(--text-muted);
-            max-width: 600px;
-            margin-bottom: 3rem;
-        }
-
-        /* PROJECTION SECTION */
-        #projekcijos { padding-top: 4rem; }
-
-        .projection-controls {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        .projection-controls label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        .projection-controls input {
-            background: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            color: var(--text);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            width: 140px;
-        }
-        .projection-controls input:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .projection-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        .proj-card {
-            background: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            border-radius: 16px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .proj-card.highlight {
-            border-color: var(--gold);
-            box-shadow: 0 0 40px rgba(201, 168, 76, 0.08);
-        }
-        .proj-card.highlight::before {
-            content: 'OUTPERFORM X';
-            position: absolute;
-            top: 0; right: 0;
-            background: var(--gold);
-            color: var(--dark);
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            padding: 0.3rem 1rem;
-            border-radius: 0 16px 0 8px;
-        }
-        .proj-card h3 {
-            font-size: 1rem;
-            margin-bottom: 0.3rem;
-        }
-        .proj-card .fee-desc {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            min-height: 2.4em;
-        }
-        .proj-result {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-        }
-        .proj-result.gold { color: var(--gold); }
-        .proj-result.blue { color: var(--blue); }
-        .proj-result.muted { color: var(--text-muted); }
-        .proj-gain {
-            font-size: 0.85rem;
-            margin-bottom: 1.5rem;
-        }
-        .proj-gain .positive { color: var(--green); }
-        .proj-detail {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            border-top: 1px solid var(--dark-border);
-            padding-top: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .proj-detail-row {
-            display: flex;
-            justify-content: space-between;
-        }
-        .proj-detail-row .val { color: var(--text); font-weight: 500; }
-
-        /* CHART */
-        .chart-container {
-            background: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-        }
-        .chart-container h3 {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-        }
-        .chart-wrapper {
-            position: relative;
-            height: 400px;
-            width: 100%;
-        }
-        canvas { width: 100% !important; }
-
-        /* TABLE */
-        .table-container {
-            background: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        .table-container h3 {
-            padding: 1.5rem 2rem 0;
-            font-size: 1.1rem;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-        thead th {
-            text-align: left;
-            padding: 1rem 1.2rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--dark-border);
-        }
-        tbody td {
-            padding: 0.8rem 1.2rem;
-            border-bottom: 1px solid rgba(30, 30, 42, 0.5);
-        }
-        tbody tr:hover { background: rgba(201, 168, 76, 0.03); }
-        .col-highlight { color: var(--gold); font-weight: 600; }
-
-        /* STRATEGY */
-        .strategy-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .strat-card {
-            background: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            border-radius: 16px;
-            padding: 2rem;
-        }
-        .strat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .strat-card h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .strat-card p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* STRUCTURE */
-        .structure-flow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            margin: 3rem 0;
-            flex-wrap: wrap;
-        }
-        .struct-box {
-            background: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            border-radius: 12px;
-            padding: 1.5rem 2rem;
-            text-align: center;
-            min-width: 200px;
-        }
-        .struct-box.main {
-            border-color: var(--gold);
-            box-shadow: 0 0 30px rgba(201, 168, 76, 0.08);
-        }
-        .struct-box h4 { font-size: 0.95rem; margin-bottom: 0.3rem; }
-        .struct-box p { font-size: 0.78rem; color: var(--text-muted); }
-        .struct-arrow {
-            color: var(--gold);
-            font-size: 1.5rem;
-        }
-
-        /* FAQ */
-        .faq-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-        .faq-item {
-            border-bottom: 1px solid var(--dark-border);
-        }
-        .faq-question {
-            width: 100%;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1rem;
-            font-weight: 500;
-            text-align: left;
-            padding: 1.5rem 0;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: inherit;
-        }
-        .faq-question:hover { color: var(--gold); }
-        .faq-question .icon {
-            font-size: 1.2rem;
-            transition: transform 0.3s;
-            color: var(--text-muted);
-        }
-        .faq-item.open .faq-question .icon { transform: rotate(45deg); color: var(--gold); }
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.3s;
-        }
-        .faq-item.open .faq-answer {
-            max-height: 500px;
-            padding-bottom: 1.5rem;
-        }
-        .faq-answer p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.7;
-        }
-
-        /* ADVANTAGES */
-        .adv-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-        .adv-card {
-            background: var(--dark-card);
-            border: 1px solid var(--dark-border);
-            border-radius: 16px;
-            padding: 2rem;
-        }
-        .adv-card h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .adv-card p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* CTA */
-        .cta-section {
-            text-align: center;
-            padding: 6rem 2rem;
-        }
-        .cta-section h2 {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-        }
-        .cta-section p {
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            font-size: 1.05rem;
-        }
-        .cta-btn {
-            display: inline-block;
-            background: var(--gold);
-            color: var(--dark);
-            font-weight: 700;
-            font-size: 0.95rem;
-            padding: 1rem 2.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
-        }
-        .cta-btn:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(201, 168, 76, 0.2);
-        }
-
-        /* FOOTER */
-        footer {
-            border-top: 1px solid var(--dark-border);
-            padding: 3rem 2rem;
-            text-align: center;
-        }
-        footer p {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-
-        /* RESPONSIVE */
-        /* Mobile menu */
-        .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
-        .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); margin: 5px 0; transition: all 0.3s; }
-        .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-        .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
-
-        @media (max-width: 900px) {
-            .hero-stats { grid-template-columns: repeat(2, 1fr); }
-            .projection-grid { grid-template-columns: 1fr; }
-            .strategy-grid { grid-template-columns: 1fr; }
-            .adv-grid { grid-template-columns: 1fr; }
-            .structure-flow { flex-direction: column; }
-            .struct-arrow { transform: rotate(90deg); }
-            .hamburger { display: block; }
-            nav ul {
-                display: none;
-                position: absolute;
-                top: 64px;
-                left: 0;
-                right: 0;
-                background: rgba(10, 10, 15, 0.98);
-                border-bottom: 1px solid var(--dark-border);
-                flex-direction: column;
-                padding: 1rem 2rem 1.5rem;
-                gap: 0.8rem;
-            }
-            nav ul.open { display: flex; }
-            nav ul a { font-size: 1rem; padding: 0.4rem 0; }
-            table { font-size: 0.75rem; }
-            thead th, tbody td { padding: 0.6rem 0.6rem; }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OUTPERFORM FONDAS</title>
+<meta name="theme-color" content="#f8f1e7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
-<nav>
-    <div class="nav-inner">
-        <div class="logo">OUTPERFORM <span>X</span></div>
-        <button class="hamburger" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open');" aria-label="Meniu">
-            <span></span><span></span><span></span>
-        </button>
-        <ul>
-            <li><a href="#apie">Apie fondą</a></li>
-            <li><a href="#strategija">Strategija</a></li>
-            <li><a href="#projekcijos">Projekcijos</a></li>
-            <li><a href="#struktura">Struktūra</a></li>
-            <li><a href="#pranasumas">Pranašumai</a></li>
-            <li><a href="#duk">D.U.K.</a></li>
-            <li><a href="rezultatai.html">Valdytojo rezultatai</a></li>
-        </ul>
-    </div>
+<nav class="top" aria-label="Pagrindinė navigacija">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Outperform <em>X</em></a>
+    <button class="hamburger" aria-label="Meniu" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#apie">Apie fondą</a></li>
+      <li><a href="#strategija">Strategija</a></li>
+      <li><a href="#projekcijos">Projekcijos</a></li>
+      <li><a href="#struktura">Struktūra</a></li>
+      <li><a href="#pranasumas">Pranašumai</a></li>
+      <li><a href="#duk">D.U.K.</a></li>
+      <li><a href="rezultatai.html">Valdytojo rezultatai</a></li>
+    </ul>
+  </div>
 </nav>
 
 <!-- HERO -->
-<div class="hero" id="apie">
-    <div class="hero-badge">Pristatymas investuotojui</div>
-    <h1>Fondas <span class="accent">Outperform X</span></h1>
-    <div class="hero-stats">
-        <div class="hero-stat">
-            <div class="number">S&P 500</div>
-            <div class="label">Benchmark'as</div>
-        </div>
-        <div class="hero-stat">
-            <div class="number">25k+</div>
-            <div class="label">Min. investicija EUR</div>
-        </div>
-        <div class="hero-stat">
-            <div class="number">0%</div>
-            <div class="label">Metinis valdymo mokestis</div>
-        </div>
-        <div class="hero-stat">
-            <div class="number">IBKR</div>
-            <div class="label">Turto saugojimas</div>
-        </div>
+<header class="hero" id="apie">
+  <div class="wrap">
+    <svg class="swoosh" viewBox="0 0 470 100" aria-hidden="true">
+      <path class="s1" pathLength="1" d="M12 86 C 62 60, 152 57, 252 64 C 332 69, 398 77, 424 72 C 445 68, 449 44, 441 20"/>
+      <path class="s2" pathLength="1" d="M92 60 C 124 50, 168 47, 203 49"/>
+      <path class="s2" pathLength="1" d="M456 32 C 461 51, 452 66, 431 76"/>
+    </svg>
+    <p class="eyebrow" data-in style="--d:260ms">Pristatymas investuotojui</p>
+    <h1 data-in style="--d:340ms">Fondas <span class="accent">Outperform X</span></h1>
+    <div class="stats" role="list">
+      <div class="stat" role="listitem" data-in style="--d:620ms">
+        <div class="number">S&amp;P 500</div>
+        <div class="label">Benchmark'as</div>
+      </div>
+      <div class="stat" role="listitem" data-in style="--d:700ms">
+        <div class="number">25k+</div>
+        <div class="label">Min. investicija EUR</div>
+      </div>
+      <div class="stat" role="listitem" data-in style="--d:780ms">
+        <div class="number">0%</div>
+        <div class="label">Metinis valdymo mokestis</div>
+      </div>
+      <div class="stat" role="listitem" data-in style="--d:860ms">
+        <div class="number">IBKR</div>
+        <div class="label">Turto saugojimas</div>
+      </div>
     </div>
-</div>
+  </div>
+</header>
 
-<!-- STRATEGY -->
+<!-- STRATEGIJA -->
 <section id="strategija">
-    <div class="section-label">Investavimo strategija</div>
-    <div class="section-title">Kaip dirba jūsų kapitalas</div>
-    <div class="section-desc">Fondas investuoja į JAV akcijų rinką, naudodamas opcionų strategijas papildomai grąžai generuoti ir rizikai valdyti.</div>
-
-    <div class="strategy-grid">
-        <div class="strat-card">
-            <div class="strat-icon" style="background: rgba(201, 168, 76, 0.1); color: var(--gold);">&#9650;</div>
-            <h3>JAV akcijos</h3>
-            <p>Pagrindinė kryptis — bendrovės su pozityviomis perspektyvomis ir palankiais fundamentiniais rodikliais, kotiruojamos JAV biržose.</p>
-        </div>
-        <div class="strat-card">
-            <div class="strat-icon" style="background: rgba(91, 141, 239, 0.1); color: var(--blue);">&#8693;</div>
-            <h3>Opcionų strategijos</h3>
-            <p>Cash-Secured Puts, Covered Calls, LEAPS ir kitos strategijos, pritaikytos rinkos fazei. Papildomas pajamų srautas iš premijų.</p>
-        </div>
-        <div class="strat-card">
-            <div class="strat-icon" style="background: rgba(76, 175, 80, 0.1); color: var(--green);">&#9638;</div>
-            <h3>Rizikos valdymas</h3>
-            <p>Max finansinis svertas 2x. Dalis kapitalo visada likvidžiose formose. Aktyvus likvidumo lygio valdymas pagal rinkos fazę.</p>
-        </div>
+  <div class="wrap">
+    <div class="section-head rv">
+      <svg class="swoosh" viewBox="0 0 470 100" aria-hidden="true">
+        <path class="s1" pathLength="1" d="M12 86 C 62 60, 152 57, 252 64 C 332 69, 398 77, 424 72 C 445 68, 449 44, 441 20"/>
+        <path class="s2" pathLength="1" d="M92 60 C 124 50, 168 47, 203 49"/>
+        <path class="s2" pathLength="1" d="M456 32 C 461 51, 452 66, 431 76"/>
+      </svg>
+      <p class="section-label">Investavimo strategija</p>
+      <h2 class="section-title">Kaip dirba jūsų kapitalas</h2>
+      <p class="section-desc">Fondas investuoja į JAV akcijų rinką, naudodamas opcionų strategijas papildomai grąžai generuoti ir rizikai valdyti.</p>
     </div>
+
+    <div class="strategy-grid rv-stagger">
+      <div class="strat-card">
+        <span class="strat-mark" aria-hidden="true"></span>
+        <h3>JAV akcijos</h3>
+        <p>Pagrindinė kryptis - bendrovės su pozityviomis perspektyvomis ir palankiais fundamentiniais rodikliais, kotiruojamos JAV biržose.</p>
+      </div>
+      <div class="strat-card">
+        <span class="strat-mark" aria-hidden="true"></span>
+        <h3>Opcionų strategijos</h3>
+        <p>Cash-Secured Puts, Covered Calls, LEAPS ir kitos strategijos, pritaikytos rinkos fazei. Papildomas pajamų srautas iš premijų.</p>
+      </div>
+      <div class="strat-card">
+        <span class="strat-mark" aria-hidden="true"></span>
+        <h3>Rizikos valdymas</h3>
+        <p>Max finansinis svertas 2x. Dalis kapitalo visada likvidžiose formose. Aktyvus likvidumo lygio valdymas pagal rinkos fazę.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- PROJECTIONS -->
+<!-- PROJEKCIJOS -->
 <section id="projekcijos">
-    <div class="section-label">Skaičiai</div>
-    <div class="section-title">Trijų scenarijų palyginimas</div>
-    <div class="section-desc">Identiška pradinė investicija, skirtingi mokesčių modeliai. Pažiūrėkite, kiek mokesčių struktūra lemia galutinį rezultatą.</div>
-
-    <div class="investor-toggle" style="display:flex;gap:0;margin-bottom:1.5rem;background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;overflow:hidden;width:fit-content;">
-        <button id="btnFizinis" onclick="setInvestorType('fizinis')" class="toggle-btn active" style="padding:0.7rem 1.8rem;border:none;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.3s;">Fizinis asmuo</button>
-        <button id="btnJuridinis" onclick="setInvestorType('juridinis')" class="toggle-btn" style="padding:0.7rem 1.8rem;border:none;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.3s;">Juridinis asmuo</button>
+  <div class="wrap">
+    <div class="section-head rv">
+      <svg class="swoosh" viewBox="0 0 470 100" aria-hidden="true">
+        <path class="s1" pathLength="1" d="M12 86 C 62 60, 152 57, 252 64 C 332 69, 398 77, 424 72 C 445 68, 449 44, 441 20"/>
+        <path class="s2" pathLength="1" d="M92 60 C 124 50, 168 47, 203 49"/>
+        <path class="s2" pathLength="1" d="M456 32 C 461 51, 452 66, 431 76"/>
+      </svg>
+      <p class="section-label">Skaičiai</p>
+      <h2 class="section-title">Trijų scenarijų palyginimas</h2>
+      <p class="section-desc">Identiška pradinė investicija, skirtingi mokesčių modeliai. Pažiūrėkite, kiek mokesčių struktūra lemia galutinį rezultatą.</p>
     </div>
-    <style>
-        .toggle-btn { background: transparent; color: var(--text-muted); }
-        .toggle-btn.active { background: var(--gold); color: var(--dark); }
-        .toggle-btn:hover:not(.active) { color: var(--text); }
-    </style>
 
-    <div class="projection-controls">
+    <div class="rv">
+      <div class="investor-toggle" id="investorToggle" role="group" aria-label="Investuotojo tipas">
+        <button type="button" id="btnFizinis" class="toggle-btn active" aria-pressed="true">Fizinis asmuo</button>
+        <button type="button" id="btnJuridinis" class="toggle-btn" aria-pressed="false">Juridinis asmuo</button>
+      </div>
+
+      <div class="projection-controls">
         <div>
-            <label>Pradinis įnašas (EUR)</label><br>
-            <input type="number" id="inputAmount" value="125000" min="25000" step="5000">
-        </div>
-        <div>
-            <label>Laikotarpis (metai)</label><br>
-            <input type="number" id="inputYears" value="10" min="1" max="30">
-        </div>
-        <div>
-            <label>Fondo grąža %/m.</label><br>
-            <input type="number" id="inputReturn" value="20" min="1" max="50" step="1">
+          <label for="inputAmount">Pradinis įnašas (EUR)</label>
+          <input type="number" id="inputAmount" value="125000" min="25000" step="5000" inputmode="decimal">
         </div>
         <div>
-            <label>S&P 500 grąža %/m.</label><br>
-            <input type="number" id="inputSP" value="11" min="1" max="30" step="1">
+          <label for="inputYears">Laikotarpis (metai)</label>
+          <input type="number" id="inputYears" value="10" min="1" max="30" inputmode="numeric">
         </div>
-        <div style="display:flex;align-items:flex-end;">
-            <button onclick="recalculate()" style="background:var(--gold);color:var(--dark);border:none;padding:0.55rem 1.5rem;border-radius:8px;font-weight:700;cursor:pointer;font-size:0.9rem;">Perskaičiuoti</button>
+        <div>
+          <label for="inputReturn">Fondo grąža %/m.</label>
+          <input type="number" id="inputReturn" value="20" min="1" max="50" step="any" inputmode="decimal">
         </div>
+        <div>
+          <label for="inputSP">S&amp;P 500 grąža %/m.</label>
+          <input type="number" id="inputSP" value="11" min="1" max="30" step="any" inputmode="decimal">
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-primary" id="btnRecalc">Perskaičiuoti</button>
+        </div>
+      </div>
     </div>
 
-    <div class="projection-grid" id="projCards">
-    </div>
+    <div class="projection-grid rv-stagger" id="projCards"></div>
 
-    <div class="chart-container">
-        <h3>Portfelio vertė per laikotarpį</h3>
-        <div class="chart-wrapper">
-            <canvas id="projChart"></canvas>
-        </div>
-    </div>
+    <figure class="chart-container block-gap rv">
+      <figcaption class="fig-title">Portfelio vertė per laikotarpį</figcaption>
+      <div class="chart-wrapper" id="chartWrapper">
+        <canvas id="projChart" aria-label="Portfelio vertės grafikas" role="img"></canvas>
+        <p class="chart-fallback">Grafiko nepavyko įkelti.</p>
+      </div>
+    </figure>
 
-    <div class="table-container">
-        <h3 style="margin-bottom:1rem;">Metinis palyginimas</h3>
-        <div style="overflow-x:auto;">
-            <table id="projTable">
-            </table>
-        </div>
+    <div class="table-container block-gap rv">
+      <h3 class="fig-title">Metinis palyginimas</h3>
+      <div class="table-scroll" id="tableScroll">
+        <table class="ledger" id="projTable"></table>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- STRUCTURE -->
+<!-- STRUKTŪRA -->
 <section id="struktura">
-    <div class="section-label">Teisinė struktūra</div>
-    <div class="section-title">Kaip viskas sujungta</div>
-    <div class="section-desc">KŪB struktūra užtikrina lankstumą, aiškią atsakomybę ir investuotojų apsaugą.</div>
-
-    <div class="structure-flow">
-        <div class="struct-box">
-            <h4>Investuotojas</h4>
-            <p>Komanditorius<br>Atsako tik savo įnašu</p>
-        </div>
-        <div class="struct-arrow">&rarr;</div>
-        <div class="struct-box main">
-            <h4>KŪB Outperform X</h4>
-            <p>Investicinis fondas<br>Turtas IBKR sąskaitose</p>
-        </div>
-        <div class="struct-arrow">&rarr;</div>
-        <div class="struct-box">
-            <h4>UAB Outperform</h4>
-            <p>Tikrasis narys / Valdytojas<br>125k EUR skin in the game</p>
-        </div>
+  <div class="wrap">
+    <div class="section-head rv">
+      <svg class="swoosh" viewBox="0 0 470 100" aria-hidden="true">
+        <path class="s1" pathLength="1" d="M12 86 C 62 60, 152 57, 252 64 C 332 69, 398 77, 424 72 C 445 68, 449 44, 441 20"/>
+        <path class="s2" pathLength="1" d="M92 60 C 124 50, 168 47, 203 49"/>
+        <path class="s2" pathLength="1" d="M456 32 C 461 51, 452 66, 431 76"/>
+      </svg>
+      <p class="section-label">Teisinė struktūra</p>
+      <h2 class="section-title">Kaip viskas sujungta</h2>
+      <p class="section-desc">KŪB struktūra užtikrina lankstumą, aiškią atsakomybę ir investuotojų apsaugą.</p>
     </div>
 
-    <div class="adv-grid" style="margin-top: 3rem;">
-        <div class="adv-card">
-            <h3>Vienetų sistema</h3>
-            <p>Kiekvienas įnašas konvertuojamas į Bendrijos vienetus pagal GAV. Vieneto vertė skaičiuojama kas ketvirtį — skaidrus ir patikrinamas.</p>
-        </div>
-        <div class="adv-card">
-            <h3>Išpirkimas kas ketvirtį</h3>
-            <p>Komanditorius gali pateikti išpirkimo paraišką iki ketvirčio paskutinės darbo dienos 16:00. Mokėjimas per 30 kalendorinių dienų.</p>
-        </div>
-        <div class="adv-card">
-            <h3>Balsavimo teisės</h3>
-            <p>Balsavimo teisės perleidžiamos Valdytojui efektyviam valdymui. Strategijos keitimas, likvidavimas ir kiti esminiai klausimai reikalauja investuotojo sutikimo.</p>
-        </div>
-        <div class="adv-card">
-            <h3>Apsaugos mechanizmai</h3>
-            <p>Komanditorius atsako tik savo Įsipareigojimo suma. Valdytojas negali išpirkti savo vienetų 5 metus. IBKR SIPC apsauga iki $500k.</p>
-        </div>
+    <div class="structure-flow rv-stagger">
+      <div class="struct-box">
+        <h4>Investuotojas</h4>
+        <p>Komanditorius<br>Atsako tik savo įnašu</p>
+      </div>
+      <div class="struct-arrow" aria-hidden="true"></div>
+      <div class="struct-box main">
+        <h4>KŪB Outperform X</h4>
+        <p>Investicinis fondas<br>Turtas IBKR sąskaitose</p>
+      </div>
+      <div class="struct-arrow" aria-hidden="true"></div>
+      <div class="struct-box">
+        <h4>UAB Outperform</h4>
+        <p>Tikrasis narys / Valdytojas<br>125k EUR skin in the game</p>
+      </div>
     </div>
+
+    <div class="adv-grid rv-stagger">
+      <div class="adv-card">
+        <h3>Vienetų sistema</h3>
+        <p>Kiekvienas įnašas konvertuojamas į Bendrijos vienetus pagal GAV. Vieneto vertė skaičiuojama kas ketvirtį - skaidrus ir patikrinamas.</p>
+      </div>
+      <div class="adv-card">
+        <h3>Išpirkimas kas ketvirtį</h3>
+        <p>Komanditorius gali pateikti išpirkimo paraišką iki ketvirčio paskutinės darbo dienos 16:00. Mokėjimas per 30 kalendorinių dienų.</p>
+      </div>
+      <div class="adv-card">
+        <h3>Balsavimo teisės</h3>
+        <p>Balsavimo teisės perleidžiamos Valdytojui efektyviam valdymui. Strategijos keitimas, likvidavimas ir kiti esminiai klausimai reikalauja investuotojo sutikimo.</p>
+      </div>
+      <div class="adv-card">
+        <h3>Apsaugos mechanizmai</h3>
+        <p>Komanditorius atsako tik savo Įsipareigojimo suma. Valdytojas negali išpirkti savo vienetų 5 metus. IBKR SIPC apsauga iki 500k$.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- ADVANTAGES -->
+<!-- PRANAŠUMAI -->
 <section id="pranasumas">
-    <div class="section-label">Kodėl Outperform X</div>
-    <div class="section-title">Mokesčių struktūra, kuri dirba investuotojui</div>
-
-    <div class="adv-grid">
-        <div class="adv-card">
-            <h3>&#10003; Jokių metinių mokesčių</h3>
-            <p>Tradiciniai fondai ima 1.5–2% nuo turto kasmet, nepriklausomai nuo rezultato. Outperform X — 0% metinis mokestis. Jūsų grąža nekarpoma kiekvienais metais.</p>
-        </div>
-        <div class="adv-card">
-            <h3>&#10003; Jokio sėkmės mokesčio</h3>
-            <p>Hedge fondai paprastai ima 20% nuo kiekvieno pelno. Outperform X — 0% performance fee. Visas pelnas lieka investuotojui.</p>
-        </div>
-        <div class="adv-card">
-            <h3>&#10003; Skin in the game</h3>
-            <p>Valdytojas gauna vienetus, ne grynuosius. Jei fondas krenta — Valdytojo turtas krenta kartu. 125k EUR asmeniniai Valdytojo pinigai fonde.</p>
-        </div>
-        <div class="adv-card">
-            <h3>&#10003; Ilgalaikis suderinimas</h3>
-            <p>Valdytojas negali išpirkti savo vienetų 5 metus. Pirmą dešimtmetį — ne daugiau nei pusę. Tai garantuoja ilgalaikį interesų sutapimą.</p>
-        </div>
-        <div class="adv-card" style="border-color: var(--green); grid-column: span 2;">
-            <h3>&#10003; 0% GPM — kolektyvinio investavimo subjekto (KIS) pranašumas</h3>
-            <p>KŪB Outperform X yra kolektyvinio investavimo subjektas (KIS). Tai reiškia, kad įmonė-komanditorius nemoka GPM nuo fonde uždirbto pelno. Investuojant per ETF (pvz. S&P 500), nuo realizuoto pelno taikomas 15% GPM. Per 10 metų su 125k investicija ir 11% grąža tai sudaro daugiau nei 34 000 EUR skirtumą. KIS statusas — vienas svarbiausių struktūrinių pranašumų ilgalaikiam investuotojui.</p>
-        </div>
+  <div class="wrap">
+    <div class="section-head rv">
+      <svg class="swoosh" viewBox="0 0 470 100" aria-hidden="true">
+        <path class="s1" pathLength="1" d="M12 86 C 62 60, 152 57, 252 64 C 332 69, 398 77, 424 72 C 445 68, 449 44, 441 20"/>
+        <path class="s2" pathLength="1" d="M92 60 C 124 50, 168 47, 203 49"/>
+        <path class="s2" pathLength="1" d="M456 32 C 461 51, 452 66, 431 76"/>
+      </svg>
+      <p class="section-label">Kodėl Outperform X</p>
+      <h2 class="section-title">Mokesčių struktūra, kuri dirba investuotojui</h2>
     </div>
+
+    <div class="adv-grid rv-stagger">
+      <div class="adv-card">
+        <h3><span class="check" aria-hidden="true">&#10003;</span>Jokių metinių mokesčių</h3>
+        <p>Tradiciniai fondai ima 1.5-2% nuo turto kasmet, nepriklausomai nuo rezultato. Outperform X - 0% metinis mokestis. Jūsų grąža nekarpoma kiekvienais metais.</p>
+      </div>
+      <div class="adv-card">
+        <h3><span class="check" aria-hidden="true">&#10003;</span>Jokio sėkmės mokesčio</h3>
+        <p>Hedge fondai paprastai ima 20% nuo kiekvieno pelno. Outperform X - 0% performance fee. Visas pelnas lieka investuotojui.</p>
+      </div>
+      <div class="adv-card">
+        <h3><span class="check" aria-hidden="true">&#10003;</span>Skin in the game</h3>
+        <p>Valdytojas gauna vienetus, ne grynuosius. Jei fondas krenta - Valdytojo turtas krenta kartu. 125k EUR asmeniniai Valdytojo pinigai fonde.</p>
+      </div>
+      <div class="adv-card">
+        <h3><span class="check" aria-hidden="true">&#10003;</span>Ilgalaikis suderinimas</h3>
+        <p>Valdytojas negali išpirkti savo vienetų 5 metus. Pirmą dešimtmetį - ne daugiau nei pusę. Tai garantuoja ilgalaikį interesų sutapimą.</p>
+      </div>
+      <div class="adv-card kis">
+        <h3><span class="check" aria-hidden="true">&#10003;</span>0% GPM - kolektyvinio investavimo subjekto (KIS) pranašumas</h3>
+        <p>KŪB Outperform X yra kolektyvinio investavimo subjektas (KIS). Tai reiškia, kad įmonė-komanditorius nemoka GPM nuo fonde uždirbto pelno. Investuojant per ETF (pvz. S&amp;P 500), nuo realizuoto pelno taikomas 15% GPM. Per 10 metų su 125k investicija ir 11% grąža tai sudaro daugiau nei 34 000 EUR skirtumą. KIS statusas - vienas svarbiausių struktūrinių pranašumų ilgalaikiam investuotojui.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- FAQ -->
+<!-- D.U.K. -->
 <section id="duk">
-    <div class="section-label">D.U.K.</div>
-    <div class="section-title">Dažniausiai užduodami klausimai</div>
-
-    <div class="faq-list">
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Kuo šis fondas skiriasi nuo kitų?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Fondo valdytojo vienintelis atlygis yra fondo vertės prieaugis. Valdytojas neuždirba už turto valdymą ir negauna sėkmės mokesčio — jis yra toks pat investuotojas kaip ir kiekvienas komanditorius. Kitaip sakant, plaukia ta pačia valtimi ir gali uždirbti tik jei uždirbs investuotojams pinigus. Pirmus 5 metus Valdytojas negali parduoti nė vieno investicinio vieneto. Po 5 metų gali parduoti iki pusės. Tik po 10 metų gali investiciniais vienetais disponuoti laisvai. Visa Valdytojo sėkmė ir uždarbis priklauso nuo to, kiek naudos jis atneš investuotojams — ir tai yra pagrindinis skirtumas nuo standartinių fondų, kurie nepaisant to, ar fondui sekasi, ar jis sėkmingai valdo kapitalą, ar ne — vis tiek kiekvienais metais pasiima pinigus iš investuotojų už investicijų valdymą.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Kas yra 20% vienkartinis mokestis ir kodėl jis geresnis nei 2/20?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Investuojant 125 000 EUR, 20% vienetų priskiriami Valdytojui. Tai vienkartinis mokestis, po kurio jokių metinių ar sėkmės mokesčių. Tradicinis hedge fondas su 2% + 20% struktūra per 10 metų suvalgo žymiai didesnę dalį jūsų grąžos — nes 2% taikomi kiekvienais metais nuo vis didėjančio turto, o 20% sėkmės mokestis imamas nuo kiekvieno pelno. Outperform X modelyje Valdytojas gauna vienetus, ne grynuosius — jo turtas auga tik tada, kai auga jūsų.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Ar galiu prarasti visą investiciją?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Teoriškai — taip, kaip ir bet kurioje investicijoje į kapitalų rinkas. Bet reikia suprasti kontekstą: kad prarastumėte viską, turėtų žlugti visos JAV bendrovės, į kurias investuojame — tai būtų situacija, kurioje visi ieškotume stogo virš galvos ir kaip pavalgyti, o ne galvotume apie investicijas. Ir tokiu atveju valdytojas prarastų viską kartu su jumis — jo kapitalas yra tame pačiame fonde. Praktiškai fondas diversifikuoja per kelias pozicijas, naudoja rizikos valdymo mechanizmus ir riboja svertą iki 2x. Be to, valdytojas visada laiko dalį kapitalo pinigų rinkos priemonėse — saugiose investicijose, kurios suvaldo kritimų rizikas ir leidžia turėti pinigų užėjimams, kai rinka kris žemyn. Komanditorius pagal Bendrijos prievoles atsako tik savo Įsipareigojimo suma — negalite prarasti daugiau, nei investavote.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Kada galiu atsiimti pinigus?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Išpirkimo paraišką galite pateikti bet kuriuo metu, tačiau išpirkimas vykdomas kartą per ketvirtį. Paraiška turi būti pateikta iki ketvirčio paskutinės darbo dienos 16:00 val. Mokėjimas — per 30 kalendorinių dienų. Fondas nėra lock-up tipo — galite išeiti be baudų ir papildomų mokesčių.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Kur laikomi mano pinigai?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Bendrijos turtas laikomas Interactive Brokers (IBKR) sąskaitose — viename didžiausių ir patikimiausių brokerių pasaulyje. IBKR yra reguliuojamas SEC ir FINRA, klientų turtas apsaugotas SIPC iki $500k (iš jų $250k grynaisiais) ir papildomai draustas Lloyd's iki $30M.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Kodėl fondas nereguliuojamas Lietuvos banko?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>KŪB Outperform X veikia kaip atvirojo tipo alternatyvusis kolektyvinio investavimo subjektas pagal IISKISĮ 7 str. 5 d. Fondas nėra tiesiogiai reguliuojamas Lietuvos banko, tačiau yra prižiūrimas — vykdome pilną AML (pinigų plovimo prevencijos) programą ir taikome aukščiausius investuotojų lėšų saugumo standartus. Turtas laikomas IBKR sąskaitose su SIPC ir Lloyd's apsauga. Paprastesnis reguliavimas leidžia sutaupyti dešimtis tūkstančių eurų kasmet compliance, audito ir atskaitomybės kaštams — tie pinigai lieka dirbti portfelyje, o ne biurokratijai. Fondas gali greičiau priimti sprendimus, lanksčiau valdyti pozicijas ir laisviau lenktyniauti su rinka, užuot leidęs laiką reguliuotojo ataskaitoms.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Kokia tikėtina metinė grąža?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Fondas nesiekia ir negali garantuoti konkrečios grąžos. Tikslas — ilgalaikėje perspektyvoje viršyti S&P 500 indekso rezultatą. Opcionų strategijos leidžia generuoti papildomą premijų srautą net ir neutralioje rinkoje, bet kartu ir riboja augimo potencialą stiprioje bulių rinkoje. Praeities rezultatai negarantuoja ateities grąžos.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Ką reiškia "maksimalus finansinis svertas 2x"?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Fondas gali naudoti iki 2x svertą — tai reiškia, kad gali investuoti iki dvigubai turimos sumos, naudodamas brokerio finansavimą ar obligacijų ETF kaip užstatą. Tai padidina tiek potencialią grąžą, tiek riziką. Svertas naudojamas taktiškai — ne nuolat, o reaguojant į rinkos sąlygas.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Kaip dažnai gausiu informaciją apie fondo rezultatus?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>GAV ir vieneto vertė skaičiuojama kas ketvirtį. Informacijos teikimo dažnumas ir formatas nustatomi Prisijungimo susitarime individualiai. Valdytojas taip pat gali teikti papildomą informaciją (analizę, komentarus) pagal atskirą susitarimą.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Kas nutinka, jei Valdytojas nebegali valdyti fondo?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Tikrajam nariui (UAB Outperform) pasitraukiant, jis turi pasiūlyti naują tikrąjį narį, kurį tvirtina Dalyvių susirinkimas. Balsavimo teisių perleidimo sutartis automatiškai nutrūksta — balsai grįžta komanditoriams, investuotojai turi visą kontrolę pereinamuoju laikotarpiu. Bet svarbiausia — mes esame toje pačioje valtyje. Valdytojo asmeninis kapitalas yra fonde, jis negali išpirkti savo vienetų 5 metus. Mūsų interesas — kad fondas veiktų ir augtų ilgai.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Koks mokestinis pranašumas investuojant per KIS?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>KŪB Outperform X yra kolektyvinio investavimo subjektas (KIS) pagal IISKISĮ. Įmonė, investuojanti per KIS, nemoka pelno mokesčio nuo fonde uždirbto pelno. Tuo tarpu investuojant ne į KIS objektus, pelno mokestį būtina sumokėti. Fiziniam asmeniui galima naudotis investicine sąskaita ir susimokėti 15% GPM tik išsiimant pinigus. Per ilgą laikotarpį KIS struktūra ženkliai padidina sudėtinių palūkanų efektą — pinigai, kurie kitaip nueitų mokesčiams, toliau dirba portfelyje.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Ar investicijas į fondą galima priskirti investicinei sąskaitai?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Taip. Pagal GPMĮ 12<sup>1</sup> str. 1 d. 3 p., pajamos iš investicijų į kolektyvinio investavimo subjektų (KIS) vertybinius popierius laikomos investicinės sąskaitos pajamomis. KŪB Outperform X turi KIS statusą, todėl fizinis asmuo gali šias investicijas priskirti savo investicinei sąskaitai — nepriklausomai nuo to, ar vertybiniai popieriai yra listinguojami. Praktiškai tai reiškia: deklaruojate investicinę sąskaitą VMI, investuojate per ją į fondą, o 15% GPM mokate tik tada, kai pinigus išsiimate iš investicinės sąskaitos. Kol lėšos sąskaitoje — jokio mokesčio, visa grąža reinvestuojama ir dirba toliau.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                Koks minimalus investicijos dydis?
-                <span class="icon">+</span>
-            </button>
-            <div class="faq-answer">
-                <p>Minimali Įsipareigojimo suma — 25 000 EUR. Investuotojas turi atitikti informuotojo investuotojo reikalavimus pagal IISKISĮ.</p>
-            </div>
-        </div>
+  <div class="wrap">
+    <div class="section-head rv">
+      <svg class="swoosh" viewBox="0 0 470 100" aria-hidden="true">
+        <path class="s1" pathLength="1" d="M12 86 C 62 60, 152 57, 252 64 C 332 69, 398 77, 424 72 C 445 68, 449 44, 441 20"/>
+        <path class="s2" pathLength="1" d="M92 60 C 124 50, 168 47, 203 49"/>
+        <path class="s2" pathLength="1" d="M456 32 C 461 51, 452 66, 431 76"/>
+      </svg>
+      <p class="section-label">D.U.K.</p>
+      <h2 class="section-title">Dažniausiai užduodami klausimai</h2>
     </div>
+
+    <div class="faq-list rv">
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Kuo šis fondas skiriasi nuo kitų?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Fondo valdytojo vienintelis atlygis yra fondo vertės prieaugis. Valdytojas neuždirba už turto valdymą ir negauna sėkmės mokesčio - jis yra toks pat investuotojas kaip ir kiekvienas komanditorius. Kitaip sakant, plaukia ta pačia valtimi ir gali uždirbti tik jei uždirbs investuotojams pinigus. Pirmus 5 metus Valdytojas negali parduoti nė vieno investicinio vieneto. Po 5 metų gali parduoti iki pusės. Tik po 10 metų gali investiciniais vienetais disponuoti laisvai. Visa Valdytojo sėkmė ir uždarbis priklauso nuo to, kiek naudos jis atneš investuotojams - ir tai yra pagrindinis skirtumas nuo standartinių fondų, kurie nepaisant to, ar fondui sekasi, ar jis sėkmingai valdo kapitalą, ar ne - vis tiek kiekvienais metais pasiima pinigus iš investuotojų už investicijų valdymą.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Kas yra 20% vienkartinis mokestis ir kodėl jis geresnis nei 2/20?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Investuojant 125 000 EUR, 20% vienetų priskiriami Valdytojui. Tai vienkartinis mokestis, po kurio jokių metinių ar sėkmės mokesčių. Tradicinis hedge fondas su 2% + 20% struktūra per 10 metų suvalgo žymiai didesnę dalį jūsų grąžos - nes 2% taikomi kiekvienais metais nuo vis didėjančio turto, o 20% sėkmės mokestis imamas nuo kiekvieno pelno. Outperform X modelyje Valdytojas gauna vienetus, ne grynuosius - jo turtas auga tik tada, kai auga jūsų.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Ar galiu prarasti visą investiciją?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Teoriškai - taip, kaip ir bet kurioje investicijoje į kapitalų rinkas. Bet reikia suprasti kontekstą: kad prarastumėte viską, turėtų žlugti visos JAV bendrovės, į kurias investuojame - tai būtų situacija, kurioje visi ieškotume stogo virš galvos ir kaip pavalgyti, o ne galvotume apie investicijas. Ir tokiu atveju valdytojas prarastų viską kartu su jumis - jo kapitalas yra tame pačiame fonde. Praktiškai fondas diversifikuoja per kelias pozicijas, naudoja rizikos valdymo mechanizmus ir riboja svertą iki 2x. Be to, valdytojas visada laiko dalį kapitalo pinigų rinkos priemonėse - saugiose investicijose, kurios suvaldo kritimų rizikas ir leidžia turėti pinigų užėjimams, kai rinka kris žemyn. Komanditorius pagal Bendrijos prievoles atsako tik savo Įsipareigojimo suma - negalite prarasti daugiau, nei investavote.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Kada galiu atsiimti pinigus?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Išpirkimo paraišką galite pateikti bet kuriuo metu, tačiau išpirkimas vykdomas kartą per ketvirtį. Paraiška turi būti pateikta iki ketvirčio paskutinės darbo dienos 16:00 val. Mokėjimas - per 30 kalendorinių dienų. Fondas nėra lock-up tipo - galite išeiti be baudų ir papildomų mokesčių.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Kur laikomi mano pinigai?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Bendrijos turtas laikomas Interactive Brokers (IBKR) sąskaitose - viename didžiausių ir patikimiausių brokerių pasaulyje. IBKR yra reguliuojamas SEC ir FINRA, klientų turtas apsaugotas SIPC iki 500k$ (iš jų 250k$ grynaisiais) ir papildomai draustas Lloyd's iki 30M$.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Kodėl fondas nereguliuojamas Lietuvos banko?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>KŪB Outperform X veikia kaip atvirojo tipo alternatyvusis kolektyvinio investavimo subjektas pagal IISKISĮ 7 str. 5 d. Fondas nėra tiesiogiai reguliuojamas Lietuvos banko, tačiau yra prižiūrimas - vykdome pilną AML (pinigų plovimo prevencijos) programą ir taikome aukščiausius investuotojų lėšų saugumo standartus. Turtas laikomas IBKR sąskaitose su SIPC ir Lloyd's apsauga. Paprastesnis reguliavimas leidžia sutaupyti dešimtis tūkstančių eurų kasmet compliance, audito ir atskaitomybės kaštams - tie pinigai lieka dirbti portfelyje, o ne biurokratijai. Fondas gali greičiau priimti sprendimus, lanksčiau valdyti pozicijas ir laisviau lenktyniauti su rinka, užuot leidęs laiką reguliuotojo ataskaitoms.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Kokia tikėtina metinė grąža?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Fondas nesiekia ir negali garantuoti konkrečios grąžos. Tikslas - ilgalaikėje perspektyvoje viršyti S&amp;P 500 indekso rezultatą. Opcionų strategijos leidžia generuoti papildomą premijų srautą net ir neutralioje rinkoje, bet kartu ir riboja augimo potencialą stiprioje bulių rinkoje. Praeities rezultatai negarantuoja ateities grąžos.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Ką reiškia "maksimalus finansinis svertas 2x"?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Fondas gali naudoti iki 2x svertą - tai reiškia, kad gali investuoti iki dvigubai turimos sumos, naudodamas brokerio finansavimą ar obligacijų ETF kaip užstatą. Tai padidina tiek potencialią grąžą, tiek riziką. Svertas naudojamas taktiškai - ne nuolat, o reaguojant į rinkos sąlygas.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Kaip dažnai gausiu informaciją apie fondo rezultatus?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>GAV ir vieneto vertė skaičiuojama kas ketvirtį. Informacijos teikimo dažnumas ir formatas nustatomi Prisijungimo susitarime individualiai. Valdytojas taip pat gali teikti papildomą informaciją (analizę, komentarus) pagal atskirą susitarimą.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Kas nutinka, jei Valdytojas nebegali valdyti fondo?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Tikrajam nariui (UAB Outperform) pasitraukiant, jis turi pasiūlyti naują tikrąjį narį, kurį tvirtina Dalyvių susirinkimas. Balsavimo teisių perleidimo sutartis automatiškai nutrūksta - balsai grįžta komanditoriams, investuotojai turi visą kontrolę pereinamuoju laikotarpiu. Bet svarbiausia - mes esame toje pačioje valtyje. Valdytojo asmeninis kapitalas yra fonde, jis negali išpirkti savo vienetų 5 metus. Mūsų interesas - kad fondas veiktų ir augtų ilgai.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Koks mokestinis pranašumas investuojant per KIS?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>KŪB Outperform X yra kolektyvinio investavimo subjektas (KIS) pagal IISKISĮ. Įmonė, investuojanti per KIS, nemoka pelno mokesčio nuo fonde uždirbto pelno. Tuo tarpu investuojant ne į KIS objektus, pelno mokestį būtina sumokėti. Fiziniam asmeniui galima naudotis investicine sąskaita ir susimokėti 15% GPM tik išsiimant pinigus. Per ilgą laikotarpį KIS struktūra ženkliai padidina sudėtinių palūkanų efektą - pinigai, kurie kitaip nueitų mokesčiams, toliau dirba portfelyje.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Ar investicijas į fondą galima priskirti investicinei sąskaitai?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Taip. Pagal GPMĮ 12<sup>1</sup> str. 1 d. 3 p., pajamos iš investicijų į kolektyvinio investavimo subjektų (KIS) vertybinius popierius laikomos investicinės sąskaitos pajamomis. KŪB Outperform X turi KIS statusą, todėl fizinis asmuo gali šias investicijas priskirti savo investicinei sąskaitai - nepriklausomai nuo to, ar vertybiniai popieriai yra listinguojami. Praktiškai tai reiškia: deklaruojate investicinę sąskaitą VMI, investuojate per ją į fondą, o 15% GPM mokate tik tada, kai pinigus išsiimate iš investicinės sąskaitos. Kol lėšos sąskaitoje - jokio mokesčio, visa grąža reinvestuojama ir dirba toliau.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" aria-expanded="false">Koks minimalus investicijos dydis?<span class="icon" aria-hidden="true">+</span></button>
+        <div class="faq-answer"><p>Minimali Įsipareigojimo suma - 25 000 EUR. Investuotojas turi atitikti informuotojo investuotojo reikalavimus pagal IISKISĮ.</p></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- CTA -->
-<div class="cta-section">
+<div class="cta">
+  <div class="cta-inner rv-stagger">
+    <svg class="swoosh center" viewBox="0 0 470 100" aria-hidden="true">
+      <path class="s1" pathLength="1" d="M12 86 C 62 60, 152 57, 252 64 C 332 69, 398 77, 424 72 C 445 68, 449 44, 441 20"/>
+      <path class="s2" pathLength="1" d="M92 60 C 124 50, 168 47, 203 49"/>
+      <path class="s2" pathLength="1" d="M456 32 C 461 51, 452 66, 431 76"/>
+    </svg>
     <h2>Pasiruošę kalbėtis?</h2>
-    <p>Susisiekite ir aptarsime, ar Outperform X tinka jūsų investiciniam portfeliui.</p>
+    <p>Susisiekite ir aptarsime, ar Outperform&nbsp;X tinka jūsų investiciniam portfeliui.</p>
     <a href="mailto:info@outperform.lt" class="cta-btn">Susisiekti dėl konsultacijos</a>
+  </div>
 </div>
 
 <!-- FOOTER -->
 <footer>
-    <p>KŪB "Outperform X" | Juridinio asmens kodas 307635756 | Didlaukio 80-96, Vilnius<br>
-    Tikrasis narys: UAB Outperform (307618269)<br><br>
-    Ši medžiaga yra informacinio pobūdžio ir nėra kvietimas investuoti. Investavimas susijęs su rizika — investuotų lėšų vertė gali tiek augti, tiek mažėti, ir investuotojas gali atgauti mažiau nei investavo. Praeities rezultatai negarantuoja ateities grąžos. Bendrija ir Valdytojas yra nereguliuojami subjektai, jų veikla nėra prižiūrima Lietuvos banko. Prieš investuodami atidžiai susipažinkite su Dalyvių sutartimi ir Prisijungimo susitarimu.</p>
+  <div class="wrap">
+    <div class="read">
+      <p class="footer-brand">KŪB "Outperform X" | Juridinio asmens kodas 307635756 | Didlaukio 80-96, Vilnius<br>Tikrasis narys: UAB Outperform (307618269)</p>
+      <p>Ši medžiaga yra informacinio pobūdžio ir nėra kvietimas investuoti. Investavimas susijęs su rizika - investuotų lėšų vertė gali tiek augti, tiek mažėti, ir investuotojas gali atgauti mažiau nei investavo. Praeities rezultatai negarantuoja ateities grąžos. Bendrija ir Valdytojas yra nereguliuojami subjektai, jų veikla nėra prižiūrima Lietuvos banko. Prieš investuodami atidžiai susipažinkite su Dalyvių sutartimi ir Prisijungimo susitarimu.</p>
+    </div>
+  </div>
 </footer>
 
+<script src="assets/site.js"></script>
 <script>
-let investorType = 'fizinis';
+(function () {
+  var RM = !!(window.OX && window.OX.reducedMotion);
+  var investorType = 'fizinis';
+  var chartInstance = null;
 
-function setInvestorType(type) {
-    investorType = type;
-    document.getElementById('btnFizinis').classList.toggle('active', type === 'fizinis');
-    document.getElementById('btnJuridinis').classList.toggle('active', type === 'juridinis');
-    recalculate();
-}
+  function formatNum(n) { return Math.round(n).toLocaleString('lt-LT'); }
 
-function formatNum(n) {
-    return Math.round(n).toLocaleString('lt-LT');
-}
-
-function calcHedgeFund(principal, years, grossReturn) {
-    let balance = principal;
-    let totalMgmtFees = 0;
-    let totalPerfFees = 0;
-    let highWaterMark = principal;
-    const data = [balance];
-
-    for (let y = 0; y < years; y++) {
-        const mgmtFee = balance * 0.02;
-        totalMgmtFees += mgmtFee;
-        balance -= mgmtFee;
-
-        const grossGain = balance * (grossReturn / 100);
-        balance += grossGain;
-
-        let perfFee = 0;
-        if (balance > highWaterMark) {
-            perfFee = (balance - highWaterMark) * 0.20;
-            totalPerfFees += perfFee;
-            balance -= perfFee;
-            highWaterMark = balance;
-        }
-        data.push(balance);
+  /* ---- skaičiavimai (nepakeisti) ---- */
+  function calcHedgeFund(principal, years, grossReturn) {
+    var balance = principal, totalMgmtFees = 0, totalPerfFees = 0, highWaterMark = principal;
+    var data = [balance];
+    for (var y = 0; y < years; y++) {
+      var mgmtFee = balance * 0.02;
+      totalMgmtFees += mgmtFee;
+      balance -= mgmtFee;
+      var grossGain = balance * (grossReturn / 100);
+      balance += grossGain;
+      if (balance > highWaterMark) {
+        var perfFee = (balance - highWaterMark) * 0.20;
+        totalPerfFees += perfFee;
+        balance -= perfFee;
+        highWaterMark = balance;
+      }
+      data.push(balance);
     }
-    const profit = balance - principal;
-    const gpm = profit > 0 ? profit * 0.15 : 0;
-    const finalAfterTax = balance - gpm;
-    return { final: balance, finalAfterTax, gpm, mgmtFees: totalMgmtFees, perfFees: totalPerfFees, totalFees: totalMgmtFees + totalPerfFees, data };
-}
+    var profit = balance - principal;
+    var gpm = profit > 0 ? profit * 0.15 : 0;
+    return { final: balance, finalAfterTax: balance - gpm, gpm: gpm, mgmtFees: totalMgmtFees, perfFees: totalPerfFees, totalFees: totalMgmtFees + totalPerfFees, data: data };
+  }
+  function calcOutperform(principal, years, grossReturn) {
+    var entryFee = principal * 0.20;
+    var balance = principal - entryFee;
+    var data = [balance];
+    for (var y = 0; y < years; y++) { balance *= (1 + grossReturn / 100); data.push(balance); }
+    return { final: balance, entryFee: entryFee, totalFees: entryFee, data: data, startingBalance: principal - entryFee };
+  }
+  function calcSP500(principal, years, netReturn) {
+    var balance = principal;
+    var data = [balance];
+    for (var y = 0; y < years; y++) { balance *= (1 + netReturn / 100); data.push(balance); }
+    var profit = balance - principal;
+    var gpm = profit > 0 ? profit * 0.15 : 0;
+    return { final: balance, finalAfterTax: balance - gpm, gpm: gpm, totalFees: 0, data: data };
+  }
 
-function calcOutperform(principal, years, grossReturn) {
-    const entryFee = principal * 0.20;
-    let balance = principal - entryFee;
-    const data = [balance];
-
-    for (let y = 0; y < years; y++) {
-        balance *= (1 + grossReturn / 100);
-        data.push(balance);
-    }
-    return { final: balance, entryFee, totalFees: entryFee, data, startingBalance: principal - entryFee };
-}
-
-function calcSP500(principal, years, netReturn) {
-    let balance = principal;
-    const data = [balance];
-    for (let y = 0; y < years; y++) {
-        balance *= (1 + netReturn / 100);
-        data.push(balance);
-    }
-    const profit = balance - principal;
-    const gpm = profit > 0 ? profit * 0.15 : 0;
-    const finalAfterTax = balance - gpm;
-    return { final: balance, finalAfterTax, gpm, totalFees: 0, data };
-}
-
-let chartInstance = null;
-
-function recalculate() {
-    const principal = parseFloat(document.getElementById('inputAmount').value) || 125000;
-    const years = parseInt(document.getElementById('inputYears').value) || 10;
-    const fundReturn = parseFloat(document.getElementById('inputReturn').value) || 20;
-    const spReturn = parseFloat(document.getElementById('inputSP').value) || 11;
-
-    const hedge = calcHedgeFund(principal, years, fundReturn);
-    const outperf = calcOutperform(principal, years, fundReturn);
-    const sp = calcSP500(principal, years, spReturn);
-
-    const advantageVsHedge = outperf.final - hedge.final;
-
-    // Tax logic based on investor type
-    // Fizinis: 15% GPM on all three
-    // Juridinis: 15% on hedge & S&P, 0% on Outperform (KIS saves 17%)
-    const isFizinis = investorType === 'fizinis';
-    const taxRateHedge = isFizinis ? 0 : 0.15;
-    const taxRateSP = isFizinis ? 0 : 0.15;
-    const taxRateOutperform = 0;
-    const kisSavedRate = 0.17;
-
-    const hedgeProfit = hedge.final - principal;
-    const hedgeGPM = hedgeProfit > 0 ? hedgeProfit * taxRateHedge : 0;
-    const hedgeFinalNet = hedge.final - hedgeGPM;
-
-    const outperfProfit = outperf.final - principal;
-    const outperfGPM = outperfProfit > 0 ? outperfProfit * taxRateOutperform : 0;
-    const outperfFinalNet = outperf.final - outperfGPM;
-    const outperfKISSaved = investorType === 'juridinis' && outperfProfit > 0 ? outperfProfit * kisSavedRate : 0;
-
-    const spProfitFinal = sp.final - principal;
-    const spGPMfinal = spProfitFinal > 0 ? spProfitFinal * taxRateSP : 0;
-    const spFinalNet = sp.final - spGPMfinal;
-
-    const hedgeROI = ((hedgeFinalNet - principal) / principal * 100).toFixed(1);
-    const outperfROI = ((outperfFinalNet - principal) / principal * 100).toFixed(1);
-    const spROIafterTax = ((spFinalNet - principal) / principal * 100).toFixed(1);
-    const advantageVsHedgeTax = outperfFinalNet - hedgeFinalNet;
-
-    const taxLabel = investorType === 'fizinis' ? 'GPM' : 'pelno mokestis';
-    const taxPctLabel = investorType === 'fizinis' ? '15% GPM' : '15% pelno mok.';
-
-    // Cards
-    document.getElementById('projCards').innerHTML = `
-        <div class="proj-card">
-            <h3>Hedge fondas (2/20)</h3>
-            <div class="fee-desc">2% metinis + 20% nuo pelno${isFizinis ? '' : ' + 15% pelno mok.'}</div>
-            <div class="proj-result blue">${formatNum(hedgeFinalNet)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(hedgeFinalNet - principal)} &euro;</span> grynasis pelnas${isFizinis ? '' : ' po mokesčių'}</div>
-            <div style="background:rgba(91,141,239,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
-                <span style="font-size:1.3rem;font-weight:700;color:var(--blue);">${hedgeROI}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža${isFizinis ? '' : ' po mokesčių'}</span>
-            </div>
-            <div class="proj-detail">
-                ${!isFizinis ? `<div class="proj-detail-row"><span>Portfelio vertė prieš mokesčius</span><span class="val">${formatNum(hedge.final)} &euro;</span></div>` : ''}
-                <div class="proj-detail-row"><span>Valdymo mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.mgmtFees)} &euro;</span></div>
-                <div class="proj-detail-row"><span>Sėkmės mokesčiai</span><span class="val" style="color:var(--red);">-${formatNum(hedge.perfFees)} &euro;</span></div>
-                ${!isFizinis ? `<div class="proj-detail-row"><span>15% pelno mok.</span><span class="val" style="color:var(--red);">-${formatNum(hedgeGPM)} &euro;</span></div>` : ''}
-                <div class="proj-detail-row"><span>Iš viso nuskaičiuota</span><span class="val" style="color:var(--red);">-${formatNum(hedge.totalFees + hedgeGPM)} &euro;</span></div>
-            </div>
-        </div>
-        <div class="proj-card highlight">
-            <h3>Outperform X <span style="font-size:0.7rem;color:var(--gold);font-weight:400;">KIS</span></h3>
-            <div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis${!isFizinis ? ', 0% pelno mok. (KIS)' : ''}</div>
-            <div class="proj-result gold">${formatNum(outperfFinalNet)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(outperfFinalNet - principal)} &euro;</span> grynasis pelnas</div>
-            <div style="background:rgba(201,168,76,0.12);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
-                <span style="font-size:1.3rem;font-weight:700;color:var(--gold);">${outperfROI}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža</span>
-            </div>
-            <div class="proj-detail">
-                <div class="proj-detail-row"><span>Vienkartinis mokestis</span><span class="val" style="color:var(--red);">-${formatNum(outperf.entryFee)} &euro;</span></div>
-                <div class="proj-detail-row"><span>Metiniai mokesčiai</span><span class="val" style="color:var(--green);">0 &euro;</span></div>
-                ${!isFizinis
-                    ? `<div class="proj-detail-row"><span>Pelno mokestis</span><span class="val" style="color:var(--green);">0% (KIS)</span></div>
-                       <div class="proj-detail-row"><span>Sutaupote (17%)</span><span class="val" style="color:var(--green);">+${formatNum(outperfKISSaved)} &euro;</span></div>`
-                    : ''
-                }
-                <div class="proj-detail-row"><span>Pranašumas vs hedge</span><span class="val" style="color:var(--gold);">+${formatNum(advantageVsHedgeTax)} &euro;</span></div>
-            </div>
-        </div>
-        <div class="proj-card">
-            <h3>S&P 500 (ETF)</h3>
-            <div class="fee-desc">${spReturn}% grąža (po 0.03% TER)${!isFizinis ? ', 15% pelno mok.' : ''}</div>
-            <div class="proj-result muted">${formatNum(spFinalNet)} &euro;</div>
-            <div class="proj-gain"><span class="positive">+${formatNum(spFinalNet - principal)} &euro;</span> grynasis pelnas${!isFizinis ? ' po mokesčių' : ''}</div>
-            <div style="background:rgba(136,136,160,0.1);border-radius:8px;padding:0.6rem 1rem;margin-bottom:1rem;text-align:center;">
-                <span style="font-size:1.3rem;font-weight:700;color:var(--text-muted);">${spROIafterTax}%</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);display:block;">investicinė grąža${!isFizinis ? ' po mokesčių' : ''}</span>
-            </div>
-            <div class="proj-detail">
-                ${!isFizinis ? `<div class="proj-detail-row"><span>Portfelio vertė prieš mokesčius</span><span class="val">${formatNum(sp.final)} &euro;</span></div>
-                <div class="proj-detail-row"><span>15% pelno mok.</span><span class="val" style="color:var(--red);">-${formatNum(spGPMfinal)} &euro;</span></div>` : ''}
-                <div class="proj-detail-row"><span>Aktyvus valdymas</span><span class="val">Ne</span></div>
-                <div class="proj-detail-row"><span>Opcionų strategijos</span><span class="val">Ne</span></div>
-            </div>
-        </div>
-    `;
-
-    // Chart
-    const ctx = document.getElementById('projChart').getContext('2d');
-    if (chartInstance) chartInstance.destroy();
-
-    const labels = Array.from({length: years + 1}, (_, i) => i === 0 ? 'Start' : `${i}m.`);
-
-    chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels,
-            datasets: [
-                {
-                    label: 'Hedge fondas (2/20)',
-                    data: hedge.data,
-                    borderColor: '#5B8DEF',
-                    backgroundColor: 'rgba(91,141,239,0.05)',
-                    borderWidth: 2,
-                    pointRadius: 3,
-                    tension: 0.3,
-                    fill: false,
-                },
-                {
-                    label: 'Outperform X',
-                    data: outperf.data,
-                    borderColor: '#C9A84C',
-                    backgroundColor: 'rgba(201,168,76,0.08)',
-                    borderWidth: 3,
-                    pointRadius: 4,
-                    tension: 0.3,
-                    fill: true,
-                },
-                {
-                    label: `S&P 500 (${spReturn}%)`,
-                    data: sp.data,
-                    borderColor: '#666680',
-                    backgroundColor: 'rgba(102,102,128,0.05)',
-                    borderWidth: 2,
-                    pointRadius: 3,
-                    borderDash: [5, 5],
-                    tension: 0.3,
-                    fill: false,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: '#8888A0',
-                        font: { size: 12 },
-                        usePointStyle: true,
-                        padding: 20,
-                    }
-                },
-                tooltip: {
-                    backgroundColor: '#1a1a2e',
-                    titleColor: '#E8E8EC',
-                    bodyColor: '#E8E8EC',
-                    borderColor: '#2a2a3e',
-                    borderWidth: 1,
-                    callbacks: {
-                        label: function(context) {
-                            return context.dataset.label + ': ' + formatNum(context.parsed.y) + ' EUR';
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: { color: '#666680' },
-                    grid: { color: 'rgba(30,30,42,0.5)' }
-                },
-                y: {
-                    ticks: {
-                        color: '#666680',
-                        callback: function(value) {
-                            return (value / 1000).toFixed(0) + 'k';
-                        }
-                    },
-                    grid: { color: 'rgba(30,30,42,0.5)' }
-                }
-            }
-        }
-    });
-
-    // Table
-    let tableHTML = `<thead><tr>
-        <th>Metai</th>
-        <th>Hedge po mok.</th>
-        <th>ROI</th>
-        <th>Outperform X</th>
-        <th>ROI</th>
-        <th>S&P 500 po mok.</th>
-        <th>ROI</th>
-        <th>Outperform vs Hedge</th>
-    </tr></thead><tbody>`;
-
-    for (let y = 0; y <= years; y++) {
-        const hProfit = hedge.data[y] - principal;
-        const hTax = hProfit > 0 ? hProfit * taxRateHedge : 0;
-        const hAfterTax = hedge.data[y] - hTax;
-        const oProfit = outperf.data[y] - principal;
-        const oTax = oProfit > 0 ? oProfit * taxRateOutperform : 0;
-        const oAfterTax = outperf.data[y] - oTax;
-        const diff = oAfterTax - hAfterTax;
-        const hROI = ((hAfterTax - principal) / principal * 100).toFixed(1);
-        const oROI = ((oAfterTax - principal) / principal * 100).toFixed(1);
-        const spProfit = sp.data[y] - principal;
-        const spTax = spProfit > 0 ? spProfit * taxRateSP : 0;
-        const spAfterTax = sp.data[y] - spTax;
-        const sROI = ((spAfterTax - principal) / principal * 100).toFixed(1);
-        tableHTML += `<tr>
-            <td>${y === 0 ? 'Start' : y}</td>
-            <td>${formatNum(hAfterTax)} &euro;</td>
-            <td style="color:${hROI >= 0 ? 'var(--blue)' : 'var(--red)'}">${hROI}%</td>
-            <td class="col-highlight">${formatNum(oAfterTax)} &euro;</td>
-            <td style="color:var(--gold);font-weight:600;">${oROI}%</td>
-            <td>${formatNum(spAfterTax)} &euro;</td>
-            <td style="color:var(--text-muted)">${sROI}%</td>
-            <td style="color:${diff >= 0 ? 'var(--green)' : 'var(--red)'}">${diff >= 0 ? '+' : ''}${formatNum(diff)} &euro;</td>
-        </tr>`;
-    }
-    tableHTML += '</tbody>';
-    document.getElementById('projTable').innerHTML = tableHTML;
-}
-
-function toggleFaq(btn) {
-    const item = btn.parentElement;
-    item.classList.toggle('open');
-}
-
-// Load Chart.js and init
-function loadChartJS(callback) {
-    if (typeof Chart !== 'undefined') { callback(); return; }
-    const urls = [
-        'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.7/chart.umd.min.js'
+  /* ---- grafikas ---- */
+  function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function youFill(c) {
+    var area = c.chart.chartArea;
+    if (!area) return 'rgba(240,150,19,.10)';
+    var g = c.chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+    g.addColorStop(0, 'rgba(240,150,19,.18)');
+    g.addColorStop(1, 'rgba(240,150,19,0)');
+    return g;
+  }
+  function renderChart(labels, hedge, outperf, sp, spReturn) {
+    if (typeof Chart === 'undefined') return;
+    var datasets = [
+      { label: 'Hedge fondas (2/20)', data: hedge.data, borderColor: '#3a2f33', borderWidth: 2, fill: false, tension: .35,
+        pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: '#fdf9f2', pointHoverBorderColor: '#3a2f33', pointHoverBorderWidth: 2 },
+      { label: 'Outperform X', data: outperf.data, borderColor: '#f09613', backgroundColor: youFill, borderWidth: 3, fill: true, tension: .35,
+        pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#fdf9f2', pointHoverBorderColor: '#f09613', pointHoverBorderWidth: 2 },
+      { label: 'S&P 500 (' + spReturn + '%)', data: sp.data, borderColor: '#7a6b63', borderWidth: 1.5, borderDash: [6, 6], fill: false, tension: .35,
+        pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: '#fdf9f2', pointHoverBorderColor: '#7a6b63', pointHoverBorderWidth: 2 }
     ];
-    let idx = 0;
-    function tryNext() {
-        if (idx >= urls.length) { console.error('Chart.js failed to load'); return; }
-        const s = document.createElement('script');
-        s.src = urls[idx++];
-        s.onload = callback;
-        s.onerror = tryNext;
-        document.head.appendChild(s);
+    if (chartInstance) {
+      try {
+        chartInstance.data.labels = labels;
+        datasets.forEach(function (d, i) { chartInstance.data.datasets[i].data = d.data; chartInstance.data.datasets[i].label = d.label; });
+        chartInstance.options.animation = RM ? false : { duration: 500, easing: 'easeOutQuart' };
+        chartInstance.update();
+        return;
+      } catch (e) {
+        try { chartInstance.destroy(); } catch (e2) { /* ignoruojam */ }
+        chartInstance = null;
+      }
     }
-    tryNext();
-}
-loadChartJS(() => recalculate());
-</script>
+    var ctx = document.getElementById('projChart').getContext('2d');
+    var narrow = window.innerWidth <= 480;
+    Chart.defaults.font.family = cssVar('--sans') || 'sans-serif';
+    Chart.defaults.font.size = 12;
+    Chart.defaults.color = '#7a6b63';
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: { labels: labels, datasets: datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        animation: RM ? false : {
+          duration: 1100, easing: 'easeOutQuart',
+          delay: function (c) { return (c.type === 'data' && c.mode === 'default') ? c.dataIndex * 35 + c.datasetIndex * 90 : 0; }
+        },
+        plugins: {
+          legend: {
+            position: 'top', align: narrow ? 'start' : 'end',
+            labels: { color: '#3a2f33', font: { size: narrow ? 11 : 12.5, weight: '700' }, usePointStyle: true, pointStyle: 'line', pointStyleWidth: narrow ? 18 : 28, boxWidth: narrow ? 18 : 28, boxHeight: 8, padding: narrow ? 12 : 22 }
+          },
+          tooltip: {
+            backgroundColor: '#1c1319', titleColor: '#f8f1e7', bodyColor: '#f8f1e7',
+            titleFont: { family: cssVar('--serif') || 'serif', size: 14, weight: '700' },
+            bodyFont: { size: 12.5, weight: '600' },
+            padding: { x: 14, y: 12 }, cornerRadius: 8, borderWidth: 0,
+            displayColors: true, boxPadding: 6, boxWidth: 8, boxHeight: 8, usePointStyle: true, caretSize: 6,
+            callbacks: { label: function (c) { return ' ' + c.dataset.label + ': ' + formatNum(c.parsed.y) + ' €'; } }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, border: { color: 'rgba(28,19,25,.28)' }, ticks: { color: '#7a6b63', font: { size: 12 }, maxRotation: 0, autoSkipPadding: 18 } },
+          y: { grid: { color: 'rgba(28,19,25,.08)', drawTicks: false }, border: { display: false },
+               ticks: { color: '#7a6b63', font: { size: 12 }, padding: 10, callback: function (v) { return (v / 1000).toFixed(0) + 'k'; } } }
+        }
+      }
+    });
+  }
 
+  /* ---- kortelės, lentelė ---- */
+  function row(label, value, cls) {
+    return '<div class="proj-detail-row"><span>' + label + '</span><span class="val' + (cls ? ' ' + cls : '') + '">' + value + '</span></div>';
+  }
+  function recalculate(opts) {
+    opts = opts || {};
+    var principal = parseFloat(document.getElementById('inputAmount').value) || 125000;
+    var years = parseInt(document.getElementById('inputYears').value, 10) || 10;
+    var fundReturn = parseFloat(document.getElementById('inputReturn').value) || 20;
+    var spReturn = parseFloat(document.getElementById('inputSP').value) || 11;
+
+    var hedge = calcHedgeFund(principal, years, fundReturn);
+    var outperf = calcOutperform(principal, years, fundReturn);
+    var sp = calcSP500(principal, years, spReturn);
+
+    var isFizinis = investorType === 'fizinis';
+    var taxRateHedge = isFizinis ? 0 : 0.15;
+    var taxRateSP = isFizinis ? 0 : 0.15;
+    var taxRateOutperform = 0;
+    var kisSavedRate = 0.17;
+
+    var hedgeProfit = hedge.final - principal;
+    var hedgeGPM = hedgeProfit > 0 ? hedgeProfit * taxRateHedge : 0;
+    var hedgeFinalNet = hedge.final - hedgeGPM;
+
+    var outperfProfit = outperf.final - principal;
+    var outperfGPM = outperfProfit > 0 ? outperfProfit * taxRateOutperform : 0;
+    var outperfFinalNet = outperf.final - outperfGPM;
+    var outperfKISSaved = (!isFizinis && outperfProfit > 0) ? outperfProfit * kisSavedRate : 0;
+
+    var spProfitFinal = sp.final - principal;
+    var spGPMfinal = spProfitFinal > 0 ? spProfitFinal * taxRateSP : 0;
+    var spFinalNet = sp.final - spGPMfinal;
+
+    var hedgeROI = ((hedgeFinalNet - principal) / principal * 100).toFixed(1);
+    var outperfROI = ((outperfFinalNet - principal) / principal * 100).toFixed(1);
+    var spROIafterTax = ((spFinalNet - principal) / principal * 100).toFixed(1);
+    var advantageVsHedgeTax = outperfFinalNet - hedgeFinalNet;
+
+    var cards = document.getElementById('projCards');
+    cards.innerHTML =
+      '<div class="proj-card">' +
+        '<h3>Hedge fondas (2/20)</h3>' +
+        '<div class="fee-desc">2% metinis + 20% nuo pelno' + (isFizinis ? '' : ' + 15% pelno mok.') + '</div>' +
+        '<div class="proj-result hedge">' + formatNum(hedgeFinalNet) + ' &euro;</div>' +
+        '<div class="proj-gain"><span class="positive">+' + formatNum(hedgeFinalNet - principal) + ' &euro;</span> grynasis pelnas' + (isFizinis ? '' : ' po mokesčių') + '</div>' +
+        '<div class="proj-roi hedge"><b>' + hedgeROI + '%</b><span>investicinė grąža' + (isFizinis ? '' : ' po mokesčių') + '</span></div>' +
+        '<div class="proj-detail">' +
+          (!isFizinis ? row('Portfelio vertė prieš mokesčius', formatNum(hedge.final) + ' &euro;') : '') +
+          row('Valdymo mokesčiai', '-' + formatNum(hedge.mgmtFees) + ' &euro;', 'neg') +
+          row('Sėkmės mokesčiai', '-' + formatNum(hedge.perfFees) + ' &euro;', 'neg') +
+          (!isFizinis ? row('15% pelno mok.', '-' + formatNum(hedgeGPM) + ' &euro;', 'neg') : '') +
+          row('Iš viso nuskaičiuota', '-' + formatNum(hedge.totalFees + hedgeGPM) + ' &euro;', 'neg') +
+        '</div>' +
+      '</div>' +
+      '<div class="proj-card highlight">' +
+        '<h3>Outperform X <span class="kis-tag">KIS</span></h3>' +
+        '<div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis' + (!isFizinis ? ', 0% pelno mok. (KIS)' : '') + '</div>' +
+        '<div class="proj-result you">' + formatNum(outperfFinalNet) + ' &euro;</div>' +
+        '<div class="proj-gain"><span class="positive">+' + formatNum(outperfFinalNet - principal) + ' &euro;</span> grynasis pelnas</div>' +
+        '<div class="proj-roi you"><b>' + outperfROI + '%</b><span>investicinė grąža</span></div>' +
+        '<div class="proj-detail">' +
+          row('Vienkartinis mokestis', '-' + formatNum(outperf.entryFee) + ' &euro;', 'neg') +
+          row('Metiniai mokesčiai', '0 &euro;', 'pos') +
+          (!isFizinis ? row('Pelno mokestis', '0% (KIS)', 'pos') + row('Sutaupote (17%)', '+' + formatNum(outperfKISSaved) + ' &euro;', 'pos') : '') +
+          row('Pranašumas vs hedge', '+' + formatNum(advantageVsHedgeTax) + ' &euro;', 'acc') +
+        '</div>' +
+      '</div>' +
+      '<div class="proj-card">' +
+        '<h3>S&amp;P 500 (ETF)</h3>' +
+        '<div class="fee-desc">' + spReturn + '% grąža (po 0.03% TER)' + (!isFizinis ? ', 15% pelno mok.' : '') + '</div>' +
+        '<div class="proj-result spx">' + formatNum(spFinalNet) + ' &euro;</div>' +
+        '<div class="proj-gain"><span class="positive">+' + formatNum(spFinalNet - principal) + ' &euro;</span> grynasis pelnas' + (!isFizinis ? ' po mokesčių' : '') + '</div>' +
+        '<div class="proj-roi spx"><b>' + spROIafterTax + '%</b><span>investicinė grąža' + (!isFizinis ? ' po mokesčių' : '') + '</span></div>' +
+        '<div class="proj-detail">' +
+          (!isFizinis ? row('Portfelio vertė prieš mokesčius', formatNum(sp.final) + ' &euro;') + row('15% pelno mok.', '-' + formatNum(spGPMfinal) + ' &euro;', 'neg') : '') +
+          row('Aktyvus valdymas', 'Ne') +
+          row('Opcionų strategijos', 'Ne') +
+        '</div>' +
+      '</div>';
+    Array.prototype.forEach.call(cards.children, function (c, i) { c.style.setProperty('--i', i); });
+    if (opts.flash && !RM) {
+      Array.prototype.forEach.call(cards.children, function (c) { c.classList.add('flash'); });
+    }
+
+    var labels = [];
+    for (var i = 0; i <= years; i++) labels.push(i === 0 ? 'Start' : i + 'm.');
+    renderChart(labels, hedge, outperf, sp, spReturn);
+
+    var html = '<thead><tr><th>Metai</th><th>Hedge po mok.</th><th>ROI</th><th>Outperform X</th><th>ROI</th><th>S&amp;P 500 po mok.</th><th>ROI</th><th>Outperform vs Hedge</th></tr></thead><tbody>';
+    for (var y = 0; y <= years; y++) {
+      var hProfit = hedge.data[y] - principal;
+      var hAfterTax = hedge.data[y] - (hProfit > 0 ? hProfit * taxRateHedge : 0);
+      var oProfit = outperf.data[y] - principal;
+      var oAfterTax = outperf.data[y] - (oProfit > 0 ? oProfit * taxRateOutperform : 0);
+      var sProfit = sp.data[y] - principal;
+      var sAfterTax = sp.data[y] - (sProfit > 0 ? sProfit * taxRateSP : 0);
+      var diff = oAfterTax - hAfterTax;
+      var hROI = ((hAfterTax - principal) / principal * 100).toFixed(1);
+      var oROI = ((oAfterTax - principal) / principal * 100).toFixed(1);
+      var sROI = ((sAfterTax - principal) / principal * 100).toFixed(1);
+      html += '<tr>' +
+        '<td>' + (y === 0 ? 'Start' : y) + '</td>' +
+        '<td>' + formatNum(hAfterTax) + ' &euro;</td>' +
+        '<td class="' + (hROI >= 0 ? '' : 'neg') + '">' + hROI + '%</td>' +
+        '<td>' + formatNum(oAfterTax) + ' &euro;</td>' +
+        '<td>' + oROI + '%</td>' +
+        '<td>' + formatNum(sAfterTax) + ' &euro;</td>' +
+        '<td>' + sROI + '%</td>' +
+        '<td class="' + (diff >= 0 ? 'pos' : 'neg') + '">' + (diff >= 0 ? '+' : '-') + formatNum(Math.abs(diff)) + ' &euro;</td>' +
+      '</tr>';
+    }
+    html += '</tbody>';
+    document.getElementById('projTable').innerHTML = html;
+    checkScroll();
+  }
+
+  var scroller = document.getElementById('tableScroll');
+  function checkScroll() { scroller.classList.toggle('can-scroll', scroller.scrollWidth > scroller.clientWidth + 2); }
+  window.addEventListener('resize', checkScroll);
+
+  /* ---- valdikliai ---- */
+  function setInvestorType(type) {
+    investorType = type;
+    document.getElementById('investorToggle').classList.toggle('juridinis', type === 'juridinis');
+    var f = document.getElementById('btnFizinis'), j = document.getElementById('btnJuridinis');
+    f.classList.toggle('active', type === 'fizinis'); f.setAttribute('aria-pressed', String(type === 'fizinis'));
+    j.classList.toggle('active', type === 'juridinis'); j.setAttribute('aria-pressed', String(type === 'juridinis'));
+    recalculate({ flash: true });
+  }
+  document.getElementById('btnFizinis').addEventListener('click', function () { setInvestorType('fizinis'); });
+  document.getElementById('btnJuridinis').addEventListener('click', function () { setInvestorType('juridinis'); });
+  document.getElementById('btnRecalc').addEventListener('click', function () { recalculate({ flash: true }); });
+  var debounce = null;
+  ['inputAmount', 'inputYears', 'inputReturn', 'inputSP'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', function () {
+      clearTimeout(debounce);
+      debounce = setTimeout(function () { recalculate(); }, 300);
+    });
+  });
+
+  /* ---- D.U.K. ---- */
+  Array.prototype.forEach.call(document.querySelectorAll('.faq-question'), function (btn) {
+    btn.addEventListener('click', function () {
+      var open = btn.parentElement.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  });
+
+  /* ---- Chart.js įkrovimas (kortelės ir lentelė rodomos iš karto) ---- */
+  recalculate();
+  (function loadChartJS(cb) {
+    if (typeof Chart !== 'undefined') { cb(); return; }
+    var urls = [
+      'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.7/chart.umd.min.js'
+    ];
+    var idx = 0;
+    (function tryNext() {
+      if (idx >= urls.length) { document.getElementById('chartWrapper').classList.add('no-chart'); return; }
+      var s = document.createElement('script');
+      s.src = urls[idx++];
+      s.onload = cb;
+      s.onerror = tryNext;
+      document.head.appendChild(s);
+    })();
+  })(function () { recalculate(); });
+})();
+</script>
 </body>
 </html>

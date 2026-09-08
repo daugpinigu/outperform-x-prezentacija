@@ -225,6 +225,14 @@ section { padding: var(--section-y) 0; }
 .gain h3 { font-size: 21px; line-height: 1.2; letter-spacing: -.02em; margin: 0 0 12px; text-wrap: balance; }
 .gain p { font-size: 16px; line-height: 1.5; color: var(--muted); margin: 0; }
 
+/* ---------- strategija: įrankių lentelė ---------- */
+.tools { border-top: 1px solid var(--hair-strong); }
+.tool { display: grid; grid-template-columns: 200px 1.15fr 1fr; gap: 6px 36px; padding: 18px 0; border-bottom: 1px solid var(--hair); }
+.tool-head { padding: 12px 0; font-size: 13px; font-weight: 500; color: var(--muted); }
+.tool-name { font-size: 17px; font-weight: 600; color: var(--ink); }
+.tool-when, .tool-gives { font-size: 15.5px; line-height: 1.5; color: var(--ink-soft); }
+.tool-gives { color: var(--muted); }
+
 /* ---------- kaip investuoju ---------- */
 .layers { border-top: 1px solid var(--hair-strong); }
 .layer { display: grid; grid-template-columns: 260px 1fr; gap: 20px 48px; padding: 34px 0; border-bottom: 1px solid var(--hair); }
@@ -610,6 +618,10 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
   .stat:nth-child(even) { padding-right: 0; }
   .fee-grid { grid-template-columns: 1fr; }
   .gains { grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  .tool { grid-template-columns: 1fr; gap: 4px; }
+  .tool-head { display: none; }
+  .tool-when::before { content: "Kada: "; color: var(--muted); }
+  .tool-gives::before { content: "Duoda: "; color: var(--muted); }
   .layer { grid-template-columns: 1fr; gap: 14px; }
   .rules .lines { grid-template-columns: 1fr; }
   .two { grid-template-columns: 1fr; }

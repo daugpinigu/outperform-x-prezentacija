@@ -197,7 +197,7 @@
       </div>
       <div class="fee-chart-card">
         <h3 class="fig-title">Kada mokestis atsiperka</h3>
-        <p class="fig-sub">Grynoji vertė po mokesčio, kai metinė grąža <span id="feeR">25</span>%, o S&amp;P 500 <span id="feeS">11</span>%. Fondo grąža keičiasi kartu su skaičiuokle žemiau.</p>
+        <p class="fig-sub" id="feeText"></p>
         <svg viewBox="0 0 640 300" class="fee-chart" id="feeChart" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mokesčio atsipirkimo grafikas">
           <g id="feeGrid"></g>
           <g id="feeYL"></g>
@@ -211,7 +211,6 @@
           <text id="feeYouLabel" fill="#b8650a" font-size="13" font-weight="600" text-anchor="end"></text>
           <text id="feeSpxLabel" fill="#7a6b63" font-size="13" font-weight="600" text-anchor="end"></text>
         </svg>
-        <p class="fee-text" id="feeText"></p>
       </div>
     </div>
 
@@ -577,8 +576,6 @@
         ? 'Su <strong>' + r + '%</strong> metine grąža mokestis atsipirktų <strong>po ' + dec(tStar, 1) + ' metų</strong>, tai yra už pasirinkto laikotarpio ribų. Šiuo laikotarpiu ETF lieka priekyje.'
         : 'Kai fondo grąža neviršija S&amp;P 500 grąžos, mokestis neatsiperka niekada. Tokiu atveju indeksinis ETF būtų geresnis pasirinkimas.';
     }
-    document.getElementById('feeR').textContent = r;
-    document.getElementById('feeS').textContent = s;
   }
   var feeResize = null;
   window.addEventListener('resize', function () {

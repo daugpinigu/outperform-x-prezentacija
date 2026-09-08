@@ -212,7 +212,7 @@ section { padding: var(--section-y) 0; }
 /* ---------- atvirai (vienintelė pastraipa puslapyje) ---------- */
 .letter .read { max-width: 660px; margin: 0 auto; text-align: center; }
 .letter .section-label { margin-bottom: 22px; }
-.letter p:not(.section-label) { font-size: clamp(19px, 1.7vw, 24px); line-height: 1.5; color: var(--ink-soft); letter-spacing: -.012em; text-wrap: pretty; margin: 0; }
+.letter p:not(.section-label) { font-size: clamp(19px, 1.7vw, 24px); line-height: 1.5; color: var(--muted); letter-spacing: -.012em; text-wrap: pretty; margin: 0; }
 
 /* ---------- punktai (bendras) ---------- */
 .lines { list-style: none; margin: 0; padding: 0; }

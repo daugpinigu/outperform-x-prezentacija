@@ -721,3 +721,6 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
   .example-125 .bar-row { grid-template-columns: 1fr auto; }
   .example-125 .bar-track { grid-column: 1 / -1; order: 3; }
 }
+
+/* v14.30: antra laiško pastraipa */
+.letter p:not(.section-label) + p { margin-top: 20px; }

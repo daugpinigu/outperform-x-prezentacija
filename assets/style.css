@@ -219,6 +219,12 @@ section { padding: var(--section-y) 0; }
 .lines li { position: relative; padding: 7px 0 7px 22px; font-size: 17px; line-height: 1.45; color: var(--ink-soft); }
 .lines li::before { content: ""; position: absolute; left: 0; top: 15px; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
 
+/* ---------- ką gauni ---------- */
+.gains { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 40px; border-top: 1px solid var(--hair-strong); }
+.gain { padding: 30px 0 32px; border-bottom: 1px solid var(--hair); min-width: 0; }
+.gain h3 { font-size: 21px; line-height: 1.2; letter-spacing: -.02em; margin: 0 0 12px; text-wrap: balance; }
+.gain p { font-size: 16px; line-height: 1.5; color: var(--muted); margin: 0; }
+
 /* ---------- kaip investuoju ---------- */
 .layers { border-top: 1px solid var(--hair-strong); }
 .layer { display: grid; grid-template-columns: 260px 1fr; gap: 20px 48px; padding: 34px 0; border-bottom: 1px solid var(--hair); }
@@ -603,6 +609,7 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
   .stat:nth-child(odd) { padding-left: 0; border-left: 0; }
   .stat:nth-child(even) { padding-right: 0; }
   .fee-grid { grid-template-columns: 1fr; }
+  .gains { grid-template-columns: 1fr 1fr; gap: 0 32px; }
   .layer { grid-template-columns: 1fr; gap: 14px; }
   .rules .lines { grid-template-columns: 1fr; }
   .two { grid-template-columns: 1fr; }
@@ -623,6 +630,7 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
 }
 @media (max-width: 720px) {
   .hero { padding-top: 56px; }
+  .gains { grid-template-columns: 1fr; }
   .investor-toggle { width: 100%; }
   .toggle-btn { flex: 1; min-width: 0; padding-inline: 12px; }
   .table-scroll { padding: 0 20px 12px; }

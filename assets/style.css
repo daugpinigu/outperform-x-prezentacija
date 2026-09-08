@@ -192,6 +192,7 @@ section { padding: var(--section-y) 0; }
   margin: 0 auto 18px; max-width: 18ch; text-wrap: balance;
 }
 .section-desc { font-size: clamp(17px, 1.4vw, 20px); line-height: 1.5; color: var(--muted); max-width: 52ch; margin: 0 auto; text-wrap: balance; }
+.section-desc + .section-desc { margin-top: 14px; }
 .statement { padding-bottom: clamp(40px, 5vw, 72px); }
 .statement .section-head { margin-bottom: 0; max-width: 780px; }
 .statement .section-title { max-width: 20ch; }

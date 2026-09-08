@@ -152,25 +152,35 @@
     <div class="section-head rv">
       <p class="section-label">Scenarijai</p>
       <h2 class="section-title">Ko tikėtis</h2>
-      <p class="section-desc">Vieni metai, kapitalas po mokesčio. Skaičiai iš prielaidų po lentele, ne pažadas.</p>
+      <p class="section-desc">Strategija keičiasi kartu su rinka, todėl tikslių skaičių čia nėra. Trys rinkos fazės ir kas jose vyksta.</p>
     </div>
 
-    <div class="mkt-wrap rv">
-      <div class="mkt-scroll">
-        <table class="mkt" aria-label="Trys rinkos scenarijai per vienus metus">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Rinka stovi<small>S&amp;P 500 0%</small></th>
-              <th>Rinka auga<small>S&amp;P 500 +11%</small></th>
-              <th>Rinka krenta<small>S&amp;P 500 -30% iki -40%</small></th>
-            </tr>
-          </thead>
-          <tbody id="mktBody"></tbody>
-        </table>
+    <div class="phases rv-stagger">
+      <div class="phase">
+        <h3>Rinka stovi<small>S&amp;P 500 apie 0%</small></h3>
+        <ul class="lines">
+          <li>Akcijos nekyla, dirba premijos ir pinigų rinkos palūkanos</li>
+          <li>PUT expiruoja be assignment, covered calls prideda</li>
+          <li>Tikėtina teigiama grąža, kai indeksas stovi vietoje</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <h3>Rinka auga<small>S&amp;P 500 +10% ir daugiau</small></h3>
+        <ul class="lines">
+          <li>Akcijos ir LEAPS auga kartu su rinka, premijos prisideda</li>
+          <li>Covered calls dalį augimo riboja</li>
+          <li>Tikėtina grąža virš S&amp;P 500</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <h3>Rinka krenta<small>S&amp;P 500 -30% iki -40%</small></h3>
+        <ul class="lines">
+          <li>Portfelis krenta kartu su rinka, trumpuoju laikotarpiu gali kristi daugiau nei indeksas</li>
+          <li>PUT assignment atveža norimas akcijas pigiau, premijos storėja</li>
+          <li>Būtent čia keliamas svertas ir perkama pigiau</li>
+        </ul>
       </div>
     </div>
-    <p class="assump rv">Prielaidos: 60% kapitalo akcijose ir ETF, 40% pinigų rinkoje po 4%. PUT notional 100% kapitalo su ~8% metine premija, strike ~17% žemiau kainos. Covered calls ~1%. Prieš asmeninius mokesčius.</p>
 
     <div class="two rv-stagger">
       <div>
@@ -194,7 +204,7 @@
     </div>
 
     <div class="honest rv">
-      <p>25%+ vidurkis ateina ne iš kiekvienų metų. Ramūs metai duoda apie 10%, augimas 15-20%, o metai po korekcijos su 1.5-2x ekspozicija gali duoti 40-100%. Jei korekcija gilėja, anksti pakeltas svertas didina nuostolį. Grąža negarantuojama.</p>
+      <p>25%+ vidurkis ateina iš viso ciklo, ne iš kiekvienų metų: ramūs metai duoda mažiau, metai po korekcijos gali duoti gerokai daugiau. Jei korekcija gilėja, anksti pakeltas svertas didina nuostolį. Atskiri metai gali būti neigiami. Grąža negarantuojama.</p>
     </div>
   </div>
 </section>
@@ -573,42 +583,6 @@
     checkScroll();
     renderFeeChart(fundReturn, spReturn, years);
   }
-
-  /* ---- trys rinkos: vieni metai, kapitalas po mokesčio ---- */
-  (function renderMarkets() {
-    var tb = document.getElementById('mktBody');
-    if (!tb) return;
-    var A = { spot: 0.60, cash: 0.40, cashYield: 0.04, putNotional: 1.00, premium: 0.08, strikeBelow: 0.17, cc: 0.01, spxDiv: 0.013 };
-    var cols = [[0, 0], [0.11, 0.11], [-0.30, -0.40]];
-    function pct(x) {
-      var v = Math.abs(x) < 0.03 ? (Math.round(x * 1000) / 10) : Math.round(x * 100);
-      var s = String(v).replace('.', ',');
-      return (x > 0 ? '+' : x < 0 ? '-' : '') + s.replace('-', '') + '%';
-    }
-    function cls(x) { return x > 0.0005 ? 'pos' : x < -0.0005 ? 'neg' : 'zero'; }
-    function cell(pair) {
-      var a = pair[0], b = pair[1];
-      var same = Math.abs(a - b) < 0.0005;
-      var txt = same ? pct(a) : pct(a) + ' iki ' + pct(b);
-      return '<td class="' + cls(same ? a : Math.min(a, b)) + '">' + txt + '</td>';
-    }
-    var rows = [
-      { name: 'Akcijos ir ETF', sub: '60% kapitalo', f: function (s) { return s * A.spot; } },
-      { name: 'Pinigų rinka', sub: '40% kapitalo po 4%', f: function () { return A.cash * A.cashYield; } },
-      { name: 'PUT premijos', sub: 'notional 100% kapitalo, ~8% per metus', f: function () { return A.putNotional * A.premium; } },
-      { name: 'PUT assignment', sub: 'strike ~17% žemiau kainos', f: function (s) { return Math.min(0, s + A.strikeBelow) * A.putNotional; } },
-      { name: 'Covered calls', sub: '', f: function () { return A.cc; } }
-    ];
-    var totals = cols.map(function (c) { return c.map(function (s) { return rows.reduce(function (acc, r) { return acc + r.f(s); }, 0); }); });
-    var html = rows.map(function (r) {
-      return '<tr><td>' + r.name + (r.sub ? '<small>' + r.sub + '</small>' : '') + '</td>' +
-        cols.map(function (c) { return cell(c.map(r.f)); }).join('') + '</tr>';
-    }).join('');
-    html += '<tr class="total"><td>Outperform X</td>' + totals.map(cell).join('') + '</tr>';
-    html += '<tr class="spx"><td>S&amp;P 500<small>palyginimui</small></td>' +
-      cols.map(function (c) { return cell(c.map(function (s) { return s === 0 ? A.spxDiv : s; })); }).join('') + '</tr>';
-    tb.innerHTML = html;
-  })();
 
   /* ---- mokesčio atsipirkimo grafikas ---- */
   var feeSvg = document.getElementById('feeChart');

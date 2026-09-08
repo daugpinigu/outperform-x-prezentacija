@@ -254,24 +254,11 @@ section { padding: var(--section-y) 0; }
 .rules .lines li::before { top: 23px; }
 
 /* ---------- ko tikėtis: trys rinkos ---------- */
-.mkt-wrap { background: var(--card); border-radius: var(--r-card); overflow: hidden; }
-.mkt-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 10px 32px 14px; }
-.mkt { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums lining-nums; }
-.mkt thead th { text-align: right; padding: 22px 16px 14px; font-size: 15px; font-weight: 600; color: var(--ink); border-bottom: 1px solid var(--hair-strong); white-space: nowrap; vertical-align: bottom; }
-.mkt thead th small { display: block; font-size: 12.5px; font-weight: 500; color: var(--muted); margin-top: 4px; }
-.mkt thead th:first-child { text-align: left; }
-.mkt tbody td { text-align: right; padding: 13px 16px; border-bottom: 1px solid var(--hair); color: var(--ink-soft); font-weight: 500; white-space: nowrap; vertical-align: top; }
-.mkt tbody td:first-child { text-align: left; color: var(--ink); }
-.mkt tbody td small { display: block; font-size: 12.5px; font-weight: 500; color: var(--muted); margin-top: 3px; white-space: normal; }
-.mkt td.pos { color: var(--green); }
-.mkt td.neg { color: var(--loss); }
-.mkt td.zero { color: var(--muted); }
-.mkt tr.total td { border-top: 1px solid var(--hair-strong); border-bottom: 0; font-weight: 700; color: var(--ink); font-size: 19px; padding-top: 18px; padding-bottom: 8px; }
-.mkt tr.total td.pos { color: var(--green); }
-.mkt tr.total td.neg { color: var(--loss); }
-.mkt tr.spx td { border-bottom: 0; padding-top: 4px; padding-bottom: 22px; color: var(--muted); font-weight: 500; }
-.mkt tr.spx td:first-child { color: var(--muted); }
-.assump { font-size: 13.5px; line-height: 1.55; color: var(--muted); max-width: 84ch; margin: 18px auto 0; text-align: center; }
+.phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.phase { background: var(--card); border-radius: var(--r-card); padding: 34px 32px 30px; min-width: 0; }
+.phase h3 { font-size: 22px; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 16px; }
+.phase h3 small { display: block; font-size: 14px; font-weight: 500; color: var(--muted); margin-top: 6px; letter-spacing: 0; }
+.phase .lines li { font-size: 16px; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 32px 0 0; }
 .two > div { background: var(--card); border-radius: var(--r-card); padding: 34px 32px 30px; min-width: 0; }
 .two h3 { font-size: 21px; letter-spacing: -.02em; line-height: 1.2; margin: 0 0 16px; text-wrap: balance; }
@@ -625,6 +612,7 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
   .layer { grid-template-columns: 1fr; gap: 14px; }
   .rules .lines { grid-template-columns: 1fr; }
   .two { grid-template-columns: 1fr; }
+  .phases { grid-template-columns: 1fr; }
   .ex-grid { grid-template-columns: 1fr 1fr; }
   .term { grid-template-columns: 1fr; gap: 4px; }
   .projection-grid { grid-template-columns: 1fr; }
@@ -648,12 +636,8 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
   .table-scroll { padding: 0 20px 12px; }
   .table-container .fig-title { margin: 26px 20px 12px; }
   .ledger { font-size: 13px; }
-  .mkt-scroll { padding: 6px 20px 10px; }
-  .mkt { font-size: 14px; }
-  .mkt thead th, .mkt tbody td { padding-left: 10px; padding-right: 10px; }
-  .mkt th:first-child, .mkt td:first-child { position: sticky; left: 0; background: var(--card); z-index: 2; box-shadow: 1px 0 0 var(--hair); }
   .example { padding: 30px 24px 26px; }
-  .two > div { padding: 28px 22px 24px; }
+  .two > div, .phase { padding: 28px 22px 24px; }
   .ledger thead th, .ledger tbody td { padding: 9px 10px; }
   .ledger th:first-child, .ledger td:first-child { position: sticky; left: 0; background: var(--card); z-index: 2; box-shadow: 1px 0 0 var(--hair); }
   .ledger tbody tr:hover td:first-child { background: var(--card); }

@@ -197,7 +197,7 @@
       </div>
       <div class="fee-chart-card">
         <h3 class="fig-title">Kada mokestis atsiperka</h3>
-        <p class="fig-sub">Grynoji vertė po mokesčio, kai metinė grąža <span id="feeR">25</span>%, o S&amp;P 500 <span id="feeS">11</span>%. Skaičiai keičiasi kartu su skaičiuokle žemiau.</p>
+        <p class="fig-sub">Grynoji vertė po mokesčio, kai metinė grąža <span id="feeR">25</span>%, o S&amp;P 500 <span id="feeS">11</span>%. Fondo grąža keičiasi kartu su skaičiuokle žemiau.</p>
         <svg viewBox="0 0 640 300" class="fee-chart" id="feeChart" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mokesčio atsipirkimo grafikas">
           <g id="feeGrid"></g>
           <g id="feeYL"></g>
@@ -245,8 +245,8 @@
   <div class="wrap">
     <div class="section-head rv">
       <p class="section-label">06 · Skaičiuoklė</p>
-      <h2 class="section-title">Palyginimas su S&amp;P 500 ETF</h2>
-      <p class="section-desc">Tas pats įnašas ir laikotarpis: Outperform X po 20% mokesčio ir indeksinis ETF, sumos prieš mokesčius. Skaičiuoklė nesako, kokia grąža bus. Verta įrašyti ir 10-15%: tada matosi, kada mokestis neatsiperka.</p>
+      <h2 class="section-title">Palyginimas su tipiniu hedge fondu</h2>
+      <p class="section-desc">Ta pati grąža prieš mokesčius, tas pats įnašas ir laikotarpis: Outperform X su vienkartiniu 20% mokesčiu ir tipinis hedge fondas su 2% valdymo, 1% administravimo ir 20% sėkmės mokesčiu kasmet. Pirmus kelerius metus pigesnis hedge modelis, ilgesniu laikotarpiu vienkartinis mokestis. Verta pakeisti laikotarpį ir grąžą.</p>
     </div>
 
     <div class="rv">
@@ -260,12 +260,8 @@
           <input type="number" id="inputYears" value="10" min="1" max="30" inputmode="numeric">
         </div>
         <div>
-          <label for="inputReturn">Fondo grąža %/m.</label>
+          <label for="inputReturn">Grąža prieš mokesčius %/m.</label>
           <input type="number" id="inputReturn" value="25" min="-50" max="50" step="any" inputmode="decimal">
-        </div>
-        <div>
-          <label for="inputSP">S&amp;P 500 grąža %/m.</label>
-          <input type="number" id="inputSP" value="11" min="-50" max="30" step="any" inputmode="decimal">
         </div>
         <div class="btn-row">
           <button type="button" class="btn-primary" id="btnRecalc">Perskaičiuoti</button>
@@ -291,7 +287,7 @@
     </div>
 
     <div class="honest rv">
-      <p>Skaičiuoklė rodo sukauptą sumą prieš mokesčius. Kaip ji apmokestinama, priklauso nuo to, ar investuojama kaip fizinis, ar kaip juridinis asmuo: tai aprašyta sąlygose. Konkrečią savo situaciją verta pasitikslinti su buhalteriu.</p>
+      <p>Hedge fondo modelis: 2% valdymo ir 1% administravimo mokesčiai skaičiuojami kasmet nuo metų pradžios turto, 20% sėkmės mokestis nuo pelno virš ankstesnės aukščiausios vertės. Skaičiuoklė rodo sukauptą sumą prieš mokesčius. Kaip ji apmokestinama, priklauso nuo to, ar investuojama kaip fizinis, ar kaip juridinis asmuo: tai aprašyta sąlygose. Konkrečią savo situaciją verta pasitikslinti su buhalteriu arba su mumis.</p>
     </div>
   </div>
 </section>
@@ -353,11 +349,18 @@
     for (var y = 0; y < years; y++) { balance *= (1 + grossReturn / 100); data.push(balance); }
     return { final: balance, entryFee: entryFee, data: data, startingBalance: principal - entryFee };
   }
-  function calcSP500(principal, years, netReturn) {
-    var balance = principal;
-    var data = [balance];
-    for (var y = 0; y < years; y++) { balance *= (1 + netReturn / 100); data.push(balance); }
-    return { final: balance, data: data };
+  var H_MGMT = 0.02, H_ADMIN = 0.01, H_PERF = 0.20;
+  function calcHedge(principal, years, grossReturn) {
+    var balance = principal, hwm = principal, data = [balance];
+    var feesAssets = 0, feesPerf = 0;
+    for (var y = 0; y < years; y++) {
+      var assetFee = balance * (H_MGMT + H_ADMIN);
+      balance = balance * (1 + grossReturn / 100) - assetFee;
+      feesAssets += assetFee;
+      if (balance > hwm) { var pf = (balance - hwm) * H_PERF; balance -= pf; feesPerf += pf; hwm = balance; }
+      data.push(balance);
+    }
+    return { final: balance, data: data, feesAssets: feesAssets, feesPerf: feesPerf, fees: feesAssets + feesPerf };
   }
 
   /* ---- grafikas ---- */
@@ -370,10 +373,10 @@
     g.addColorStop(1, 'rgba(240,150,19,0)');
     return g;
   }
-  function renderChart(labels, spData, outData, spReturn) {
+  function renderChart(labels, baseData, outData, baseLabel) {
     if (typeof Chart === 'undefined') return;
     var datasets = [
-      { label: 'S&P 500 ETF (' + spReturn + '%)', data: spData, borderColor: '#7a6b63', borderWidth: 2, borderDash: [6, 6], fill: false, tension: .35,
+      { label: baseLabel, data: baseData, borderColor: '#7a6b63', borderWidth: 2, borderDash: [6, 6], fill: false, tension: .35,
         pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: '#fdf9f2', pointHoverBorderColor: '#7a6b63', pointHoverBorderWidth: 2 },
       { label: 'Outperform X', data: outData, borderColor: '#f09613', backgroundColor: youFill, borderWidth: 3, fill: true, tension: .35,
         pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: '#fdf9f2', pointHoverBorderColor: '#f09613', pointHoverBorderWidth: 2 }
@@ -442,12 +445,10 @@
     var principal = parseFloat(document.getElementById('inputAmount').value) || 125000;
     var years = parseInt(document.getElementById('inputYears').value, 10) || 10;
     var fundReturn = parseFloat(document.getElementById('inputReturn').value);
-    var spReturn = parseFloat(document.getElementById('inputSP').value);
     if (isNaN(fundReturn)) fundReturn = 25;
-    if (isNaN(spReturn)) spReturn = 11;
 
     var outperf = calcOutperform(principal, years, fundReturn);
-    var sp = calcSP500(principal, years, spReturn);
+    var sp = calcHedge(principal, years, fundReturn);
 
     var spNet = sp.final;
     var outNet = outperf.final;
@@ -459,27 +460,29 @@
     var cards = document.getElementById('projCards');
     cards.innerHTML =
       '<div class="proj-card">' +
-        '<h3>S&amp;P 500 ETF</h3>' +
-        '<div class="fee-desc">' + spReturn + '% metinė grąža po 0,03% TER, be įėjimo mokesčio</div>' +
+        '<h3>Tipinis hedge fondas</h3>' +
+        '<div class="fee-desc">2% valdymo + 1% administravimo kasmet, 20% sėkmės mokestis nuo pelno</div>' +
         '<div class="proj-result spx">' + formatNum(spNet) + ' &euro;</div>' +
         gainLine(spNet, principal) +
         '<div class="proj-roi spx"><b>' + dec(spROI, 1) + '%</b><span>grąža per laikotarpį</span></div>' +
         '<div class="proj-detail">' +
           row('Įėjimo mokestis', '0 &euro;', 'pos') +
-          row('Metiniai mokesčiai', '0,03% TER, įskaičiuota') +
+          row('Valdymo ir administravimo', '-' + formatNum(sp.feesAssets) + ' &euro;', 'neg') +
+          row('Sėkmės mokestis', '-' + formatNum(sp.feesPerf) + ' &euro;', 'neg') +
+          row('Iš viso mokesčių', '-' + formatNum(sp.fees) + ' &euro;', 'neg') +
         '</div>' +
       '</div>' +
       '<div class="proj-card highlight">' +
         '<h3>Outperform X</h3>' +
-        '<div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis</div>' +
+        '<div class="fee-desc">20% vienkartinis nuo įnašo, 0% metinis, 0% sėkmės</div>' +
         '<div class="proj-result you">' + formatNum(outNet) + ' &euro;</div>' +
         gainLine(outNet, principal) +
         '<div class="proj-roi you"><b>' + dec(outROI, 1) + '%</b><span>grąža per laikotarpį</span></div>' +
         '<div class="proj-detail">' +
           row('Vienkartinis mokestis', '-' + formatNum(outperf.entryFee) + ' &euro;', 'neg') +
           row('Investuojama po mokesčio', formatNum(outperf.startingBalance) + ' &euro;') +
-          row('Metiniai mokesčiai', '0 &euro;', 'pos') +
-          row('Skirtumas nuo ETF', signed(diff), diff >= 0 ? 'pos' : 'neg') +
+          row('Iš viso mokesčių', '-' + formatNum(outperf.entryFee) + ' &euro;', 'neg') +
+          row('Skirtumas nuo hedge fondo', signed(diff), diff >= 0 ? 'pos' : 'neg') +
         '</div>' +
       '</div>';
     Array.prototype.forEach.call(cards.children, function (c, i) { c.style.setProperty('--i', i); });
@@ -489,9 +492,9 @@
 
     var labels = [];
     for (var i = 0; i <= years; i++) labels.push(i === 0 ? 'Start' : i + 'm.');
-    renderChart(labels, sp.data, outperf.data, spReturn);
+    renderChart(labels, sp.data, outperf.data, 'Tipinis hedge fondas');
 
-    var html = '<thead><tr><th>Metai</th><th>S&amp;P 500 ETF</th><th>ROI</th><th>Outperform X</th><th>ROI</th><th>Skirtumas</th></tr></thead><tbody>';
+    var html = '<thead><tr><th>Metai</th><th>Hedge fondas</th><th>ROI</th><th>Outperform X</th><th>ROI</th><th>Skirtumas</th></tr></thead><tbody>';
     for (var y = 0; y <= years; y++) {
       var sVal = sp.data[y];
       var oVal = outperf.data[y];
@@ -510,7 +513,7 @@
     html += '</tbody>';
     document.getElementById('projTable').innerHTML = html;
     checkScroll();
-    renderFeeChart(fundReturn, spReturn, years);
+    renderFeeChart(fundReturn, 11, years);
   }
 
   /* ---- mokesčio atsipirkimo grafikas ---- */
@@ -590,7 +593,7 @@
   /* ---- valdikliai ---- */
   document.getElementById('btnRecalc').addEventListener('click', function () { recalculate({ flash: true }); });
   var debounce = null;
-  ['inputAmount', 'inputYears', 'inputReturn', 'inputSP'].forEach(function (id) {
+  ['inputAmount', 'inputYears', 'inputReturn'].forEach(function (id) {
     document.getElementById(id).addEventListener('input', function () {
       clearTimeout(debounce);
       debounce = setTimeout(function () { recalculate(); }, 300);

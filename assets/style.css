@@ -677,3 +677,28 @@ input[type=range].slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px
   .js .bk-bar { transform: scaleX(1) !important; }
   .js .donut { --sweep: 100% !important; }
 }
+
+/* ---------- prozos blokai (kilmė, atlygis) ---------- */
+.prose { max-width: 720px; margin: 0 auto; }
+.prose p { font-size: clamp(17px, 1.4vw, 19px); line-height: 1.6; color: var(--ink-soft); margin: 0 0 20px; text-wrap: pretty; }
+.prose p:last-child { margin-bottom: 0; }
+.prose h3 { font-size: 23px; letter-spacing: -.02em; margin: 0 0 14px; }
+#mokestis .prose { margin-top: 56px; }
+
+/* ---------- pliusai / minusai, tinka / netinka ---------- */
+.two.balance > div:last-child .lines li::before { background: var(--muted); }
+
+/* ---------- mokesčio atsipirkimo lentelė ---------- */
+.terms.breakeven { margin-top: 40px; max-width: 720px; }
+.breakeven .term { grid-template-columns: 220px 1fr; }
+
+/* ---------- skaičiuoklė su dviem kortelėmis ---------- */
+.projection-grid.pair { grid-template-columns: 1fr 1fr; max-width: 860px; margin-left: auto; margin-right: auto; }
+.proj-gain .negative { color: var(--loss); font-weight: 600; }
+.proj-card.highlight .proj-gain .negative { color: #e8a08f; }
+#projekcijos .honest { margin-top: 40px; }
+
+@media (max-width: 900px) {
+  .projection-grid.pair { grid-template-columns: 1fr; }
+  .breakeven .term { grid-template-columns: 1fr; }
+}

@@ -20,9 +20,9 @@
     </button>
     <ul class="nav-links" id="navLinks">
       <li><a href="#apzvalga">Apžvalga</a></li>
+      <li><a href="#mokestis">Atlygis</a></li>
       <li><a href="#kam-tinka">Kam tinka</a></li>
       <li><a href="#kaip">Strategija</a></li>
-      <li><a href="#mokestis">Atlygis</a></li>
     </ul>
   </div>
 </nav>
@@ -82,18 +82,70 @@
   </div>
 </section>
 
-<!-- KILMĖ -->
-<section id="kilme">
+<!-- ATLYGIS -->
+<section id="mokestis">
   <div class="wrap">
     <div class="section-head rv">
-      <p class="section-label">02 · Kilmė</p>
-      <h2 class="section-title">Idėjos kilmė</h2>
+      <p class="section-label">02 · Valdytojo atlygis</p>
+      <h2 class="section-title">Atlygio struktūra</h2>
+      <p class="section-desc">Vienas mokestis, sumokamas vienetais investuojant. Mano atlygis ir mano įnašas juda tik kartu su fondo vieneto verte.</p>
     </div>
+
+    <div class="fee-grid rv-stagger">
+      <div class="fee-card">
+        <div class="fee-fact">
+          <div class="n accent">20%</div>
+          <div class="t">fondo valdytojo atlygis už investicijų valdymą: vienetais nuo įnašo, vieną kartą investuojant</div>
+        </div>
+        <div class="fee-fact">
+          <div class="n">0 €</div>
+          <div class="t">metinių, sėkmės ir išėjimo mokesčių</div>
+        </div>
+        <div class="fee-fact">
+          <div class="n">5 / 10 metų</div>
+          <div class="t">valdytojo atlygio vienetai, kuriuos gaunu, užrakinti: parduoti jų negaliu, pusę galiu pasiimti tik po 5 metų, likusią pusę tik po 10 metų. Investuotojų vienetų tai neliečia: jų išpirkimas kas ketvirtį</div>
+        </div>
+      </div>
+      <div class="fee-chart-card">
+        <h3 class="fig-title">Kada mokestis atsiperka</h3>
+        <p class="fig-sub" id="feeText"></p>
+        <svg viewBox="0 0 640 300" class="fee-chart" id="feeChart" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mokesčio atsipirkimo grafikas">
+          <g id="feeGrid"></g>
+          <g id="feeYL"></g>
+          <g id="feeXL"></g>
+          <path id="feeYouArea" fill="rgba(240,150,19,.12)"></path>
+          <path id="feeSpx" stroke="#7a6b63" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path id="feeYou" stroke="#f09613" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          <line id="feeMark" stroke="#1c1319" stroke-width="1" stroke-dasharray="4 4"></line>
+          <circle id="feeDot" r="6" fill="#1c1319" stroke="#fdf9f2" stroke-width="2.5"></circle>
+          <text id="feeMarkLabel" fill="#1c1319" font-size="13" font-weight="600" text-anchor="middle"></text>
+          <text id="feeYouLabel" fill="#b8650a" font-size="13" font-weight="600" text-anchor="end"></text>
+          <text id="feeSpxLabel" fill="#7a6b63" font-size="13" font-weight="600" text-anchor="end"></text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="example-125 rv" aria-label="Pavyzdys su 125 000 € per 10 metų">
+      <h3 class="fig-title">Pavyzdys: 125&nbsp;000 € per 10 metų</h3>
+      <div class="bar-row">
+        <div class="bar-label">S&amp;P 500 ETF<span>11% per metus</span></div>
+        <div class="bar-track"><div class="bar spx" style="width:38.1%"></div></div>
+        <div class="bar-value">354&nbsp;928 €</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Outperform X<span>25% per metus, po 20% mokesčio</span></div>
+        <div class="bar-track"><div class="bar you" style="width:100%"></div></div>
+        <div class="bar-value you">931&nbsp;323 €</div>
+      </div>
+      <p class="bar-note">Sumos prieš mokesčius. 25% yra tikslas, ne prognozė: su 15% per metus fondas duotų 404&nbsp;556 €, su 11% tik 283&nbsp;942 €. Savo prielaidas galima įrašyti skaičiuoklėje žemiau.</p>
+    </div>
+
     <div class="prose rv">
-      <p>Fondo idėja atsirado ne iš verslo plano, o iš pokalbių. Esu savamokslis: kelerius metus dalinausi savo sandoriais viešai ir grupėje, ir vis daugiau artimų žmonių prašė investuoti už juos. Ilgai atsakydavau „atsidaryk sąskaitą ir daryk pats", bet mačiau, kad tai neveikia: kiekvieno dydžio portfeliui reikia kitokios strategijos, opcionams reikia kasdienio dėmesio, o dauguma tam laiko neturi ir turėti nenori, nekalbant apie tai, kiek tam reikia edukacijos ir žinių. Fondas yra tvarkingiausias būdas, kokį radau, daryti tai vienoje vietoje ir visiems vienodomis sąlygomis.</p>
-      <p>Antra priežastis yra mastelis, kurį pajutau savo kailiu. Su 25-30 tūkst. dalis strategijų tiesiog nepasiekiama: vienas PUT ant brangios akcijos užrakina visą sąskaitą, diversifikacijos nelieka, o rinktis tenka pigesnes ir dažniausiai rizikingesnes bendroves. Bendras kapitalas leidžia turėti brangias pozicijas, kelis PUT vienu metu ir rezervą korekcijai.</p>
-      <p>Fondas nėra vienintelis kelias ir nesakau, kad jis geriausias visiems. Kas turi laiko ir pakankamai kapitalo, tą patį gali daryti pats ir mokesčio nemokėti. Grupėje dalinuosi idėjomis ir sandoriais, bet labai sunku perteikti, koks svoris turėtų būti portfelyje, taip pat kokie aktyvai jau yra turimi, nes gal jie priklauso panašiam sektoriui, o tai mažina diversifikaciją arba didina riziką. Klausimų yra tikrai daug, ir tiesiog aklas kopijavimas neveikia. Šis fondas ir yra skirtas tiems, kas nori daryti kažką aktyviau, bet neturi pakankamai laiko tam skirti, bent jau dabartiniame gyvenimo etape.</p>
+      <h3>Kodėl man rūpi, kad fondas augtų</h3>
+      <p>Atlygį gaunu ne pinigais, o vienetais, tais pačiais kaip investuotojai. Neskaitant to, kad ir mano paties pinigai iš įmonės keliauja į šį fondą, tais pačiais vienetais. Abi dalys juda tik su fondo vieneto verte. Metinio mokesčio nėra, todėl mano uždarbis priklauso tik nuo fondo rezultato.</p>
+      <p>Fondui augant mano dalis auga lygiai tiek pat, kiek kiekvieno investuotojo. Jei rezultatas prastas, mano dalis mažėja kartu su fondu. Jei fondą sudeginčiau, sudeginčiau ir savo pinigus, o atlygio vienetai būtų verti nulį: negaučiau visiškai nieko. Anksčiau pasiimti irgi negaliu: pusę vienetų tik po 5 metų, likusią pusę tik po 10. Vienintelis būdas man uždirbti yra fondas, kuris auga 5-10 metų.</p>
     </div>
+
   </div>
 </section>
 
@@ -160,70 +212,18 @@
   </div>
 </section>
 
-<!-- ATLYGIS -->
-<section id="mokestis">
+<!-- KILMĖ -->
+<section id="kilme">
   <div class="wrap">
     <div class="section-head rv">
-      <p class="section-label">05 · Valdytojo atlygis</p>
-      <h2 class="section-title">Atlygio struktūra</h2>
-      <p class="section-desc">Vienas mokestis, sumokamas vienetais investuojant. Mano atlygis ir mano įnašas juda tik kartu su fondo vieneto verte.</p>
+      <p class="section-label">05 · Kilmė</p>
+      <h2 class="section-title">Idėjos kilmė</h2>
     </div>
-
-    <div class="fee-grid rv-stagger">
-      <div class="fee-card">
-        <div class="fee-fact">
-          <div class="n accent">20%</div>
-          <div class="t">fondo valdytojo atlygis už investicijų valdymą: vienetais nuo įnašo, vieną kartą investuojant</div>
-        </div>
-        <div class="fee-fact">
-          <div class="n">0 €</div>
-          <div class="t">metinių, sėkmės ir išėjimo mokesčių</div>
-        </div>
-        <div class="fee-fact">
-          <div class="n">5 / 10 metų</div>
-          <div class="t">valdytojo atlygio vienetai, kuriuos gaunu, užrakinti: parduoti jų negaliu, pusę galiu pasiimti tik po 5 metų, likusią pusę tik po 10 metų. Investuotojų vienetų tai neliečia: jų išpirkimas kas ketvirtį</div>
-        </div>
-      </div>
-      <div class="fee-chart-card">
-        <h3 class="fig-title">Kada mokestis atsiperka</h3>
-        <p class="fig-sub" id="feeText"></p>
-        <svg viewBox="0 0 640 300" class="fee-chart" id="feeChart" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mokesčio atsipirkimo grafikas">
-          <g id="feeGrid"></g>
-          <g id="feeYL"></g>
-          <g id="feeXL"></g>
-          <path id="feeYouArea" fill="rgba(240,150,19,.12)"></path>
-          <path id="feeSpx" stroke="#7a6b63" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-          <path id="feeYou" stroke="#f09613" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-          <line id="feeMark" stroke="#1c1319" stroke-width="1" stroke-dasharray="4 4"></line>
-          <circle id="feeDot" r="6" fill="#1c1319" stroke="#fdf9f2" stroke-width="2.5"></circle>
-          <text id="feeMarkLabel" fill="#1c1319" font-size="13" font-weight="600" text-anchor="middle"></text>
-          <text id="feeYouLabel" fill="#b8650a" font-size="13" font-weight="600" text-anchor="end"></text>
-          <text id="feeSpxLabel" fill="#7a6b63" font-size="13" font-weight="600" text-anchor="end"></text>
-        </svg>
-      </div>
-    </div>
-
-    <div class="example-125 rv" aria-label="Pavyzdys su 125 000 € per 10 metų">
-      <h3 class="fig-title">Pavyzdys: 125&nbsp;000 € per 10 metų</h3>
-      <div class="bar-row">
-        <div class="bar-label">S&amp;P 500 ETF<span>11% per metus</span></div>
-        <div class="bar-track"><div class="bar spx" style="width:38.1%"></div></div>
-        <div class="bar-value">354&nbsp;928 €</div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">Outperform X<span>25% per metus, po 20% mokesčio</span></div>
-        <div class="bar-track"><div class="bar you" style="width:100%"></div></div>
-        <div class="bar-value you">931&nbsp;323 €</div>
-      </div>
-      <p class="bar-note">Sumos prieš mokesčius. 25% yra tikslas, ne prognozė: su 15% per metus fondas duotų 404&nbsp;556 €, su 11% tik 283&nbsp;942 €. Savo prielaidas galima įrašyti skaičiuoklėje žemiau.</p>
-    </div>
-
     <div class="prose rv">
-      <h3>Kodėl man rūpi, kad fondas augtų</h3>
-      <p>Atlygį gaunu ne pinigais, o vienetais, tais pačiais kaip investuotojai. Neskaitant to, kad ir mano paties pinigai iš įmonės keliauja į šį fondą, tais pačiais vienetais. Abi dalys juda tik su fondo vieneto verte. Metinio mokesčio nėra, todėl mano uždarbis priklauso tik nuo fondo rezultato.</p>
-      <p>Fondui augant mano dalis auga lygiai tiek pat, kiek kiekvieno investuotojo. Jei rezultatas prastas, mano dalis mažėja kartu su fondu. Jei fondą sudeginčiau, sudeginčiau ir savo pinigus, o atlygio vienetai būtų verti nulį: negaučiau visiškai nieko. Anksčiau pasiimti irgi negaliu: pusę vienetų tik po 5 metų, likusią pusę tik po 10. Vienintelis būdas man uždirbti yra fondas, kuris auga 5-10 metų.</p>
+      <p>Fondo idėja atsirado ne iš verslo plano, o iš pokalbių. Esu savamokslis: kelerius metus dalinausi savo sandoriais viešai ir grupėje, ir vis daugiau artimų žmonių prašė investuoti už juos. Ilgai atsakydavau „atsidaryk sąskaitą ir daryk pats", bet mačiau, kad tai neveikia: kiekvieno dydžio portfeliui reikia kitokios strategijos, opcionams reikia kasdienio dėmesio, o dauguma tam laiko neturi ir turėti nenori, nekalbant apie tai, kiek tam reikia edukacijos ir žinių. Fondas yra tvarkingiausias būdas, kokį radau, daryti tai vienoje vietoje ir visiems vienodomis sąlygomis.</p>
+      <p>Antra priežastis yra mastelis, kurį pajutau savo kailiu. Su 25-30 tūkst. dalis strategijų tiesiog nepasiekiama: vienas PUT ant brangios akcijos užrakina visą sąskaitą, diversifikacijos nelieka, o rinktis tenka pigesnes ir dažniausiai rizikingesnes bendroves. Bendras kapitalas leidžia turėti brangias pozicijas, kelis PUT vienu metu ir rezervą korekcijai.</p>
+      <p>Fondas nėra vienintelis kelias ir nesakau, kad jis geriausias visiems. Kas turi laiko ir pakankamai kapitalo, tą patį gali daryti pats ir mokesčio nemokėti. Grupėje dalinuosi idėjomis ir sandoriais, bet labai sunku perteikti, koks svoris turėtų būti portfelyje, taip pat kokie aktyvai jau yra turimi, nes gal jie priklauso panašiam sektoriui, o tai mažina diversifikaciją arba didina riziką. Klausimų yra tikrai daug, ir tiesiog aklas kopijavimas neveikia. Šis fondas ir yra skirtas tiems, kas nori daryti kažką aktyviau, bet neturi pakankamai laiko tam skirti, bent jau dabartiniame gyvenimo etape.</p>
     </div>
-
   </div>
 </section>
 
